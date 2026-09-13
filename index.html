@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090806">
+  <meta name="description" content="เช็กสถานะงานฟาร์ม AXBIM SHOP แบบเรียลไทม์">
+  <title>เช็กสถานะฟาร์ม | AXBIM SHOP</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="./" aria-label="AXBIM SHOP">
+        <span class="brand-mark" aria-hidden="true">♛</span>
+        <span class="brand-copy">
+          <strong>AXBIM</strong>
+          <span>SHOP</span>
+        </span>
+      </a>
+      <div class="live-pill"><span class="live-dot" aria-hidden="true"></span> FARM STATUS</div>
+    </div>
+  </header>
+
+  <main class="shell main-content">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">AXBIM SHOP · ROBLOX FARM SERVICE</p>
+      <h1 id="page-title">เช็กสถานะฟาร์ม</h1>
+      <p class="hero-copy">เช็กคิวและเวลาคงเหลือของงานฟาร์มได้ที่นี่ ข้อมูลจะอัปเดตอัตโนมัติระหว่างที่ร้านดำเนินงาน</p>
+      <div class="hero-note"><span aria-hidden="true">⏳</span> เวลาจะนับตั้งแต่ร้านเริ่มฟาร์มจริงเท่านั้น</div>
+    </section>
+
+    <section class="summary-grid" aria-label="สรุปสถานะ">
+      <article class="summary-card summary-running">
+        <span class="summary-icon" aria-hidden="true">▶</span>
+        <div><span class="summary-label">กำลังฟาร์ม</span><strong id="running-count">0</strong></div>
+      </article>
+      <article class="summary-card summary-waiting">
+        <span class="summary-icon" aria-hidden="true">⌛</span>
+        <div><span class="summary-label">รอเริ่ม</span><strong id="waiting-count">0</strong></div>
+      </article>
+      <article class="summary-card summary-completed">
+        <span class="summary-icon" aria-hidden="true">✓</span>
+        <div><span class="summary-label">สำเร็จไปแล้ว</span><strong id="completed-count">0 งาน</strong></div>
+      </article>
+    </section>
+
+    <section class="toolbar" aria-label="ค้นหาและกรองงาน">
+      <label class="search-box" for="farm-search">
+        <span aria-hidden="true">⌕</span>
+        <input id="farm-search" type="search" autocomplete="off" placeholder="ค้นหาชื่อ Roblox หรือ FARM-167">
+      </label>
+
+      <div class="filter-row" role="group" aria-label="กรองสถานะ">
+        <button class="filter-button is-active" type="button" data-filter="all">ทั้งหมด</button>
+        <button class="filter-button" type="button" data-filter="running">กำลังฟาร์ม</button>
+        <button class="filter-button" type="button" data-filter="waiting">รอเริ่ม</button>
+        <button class="filter-button" type="button" data-filter="completed">เสร็จแล้ว</button>
+        <button class="filter-button" type="button" data-filter="stopped">หยุด</button>
+      </div>
+    </section>
+
+    <section class="list-section" aria-labelledby="queue-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">LIVE QUEUE</p>
+          <h2 id="queue-title">สถานะงานทั้งหมด</h2>
+        </div>
+        <p id="last-updated" class="last-updated" aria-live="polite">กำลังโหลดข้อมูล...</p>
+      </div>
+
+      <div id="status-panel" class="status-panel" hidden>
+        <p id="status-message"></p>
+        <button id="retry-button" class="retry-button" type="button">ลองใหม่</button>
+      </div>
+
+      <div id="farm-list" class="farm-list" aria-live="polite" aria-busy="true"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div><strong>AXBIM SHOP</strong><span>บริการฟาร์ม Roblox</span></div>
+      <p>ข้อมูลบนหน้านี้ใช้สำหรับตรวจสอบสถานะงานเท่านั้น</p>
+    </div>
+  </footer>
+
+  <script src="./config.js"></script>
+  <script type="module" src="./src/app.js?v=2"></script>
+</body>
+</html>
