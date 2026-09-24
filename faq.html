@@ -3,45 +3,194 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AXBIM SHOP | FAQ</title>
+<title>FAQ | AXBIM SHOP</title>
 <style>
-body{margin:0;background:#090806;color:#fff8e7;font-family:'Segoe UI','Noto Sans Thai',sans-serif}
-.wrap{width:min(900px,92%);margin:auto;padding:30px}
-h1,h2{color:#ffc400}
-.card{background:#15110b;border:1px solid #8f5b00;border-radius:18px;padding:22px;margin:18px 0}
-p,li{font-size:17px;line-height:1.8}
-a{color:#ffc400}
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:"Segoe UI","Noto Sans Thai",sans-serif;
+ color:#fff8e7;
+ background:
+ radial-gradient(circle at top,#4a2b00 0,#120d06 35%,#070604 100%);
+}
+.container{
+ width:min(950px,92%);
+ margin:auto;
+ padding:35px 0 50px;
+}
+.header{
+ text-align:center;
+ margin-bottom:30px;
+}
+.logo{
+ font-size:42px;
+ font-weight:900;
+ color:#ffc400;
+ letter-spacing:2px;
+}
+.sub{
+ color:#e8d39a;
+ font-size:18px;
+}
+.nav{
+ display:flex;
+ gap:10px;
+ flex-wrap:wrap;
+ justify-content:center;
+ margin:25px 0;
+}
+.nav a{
+ text-decoration:none;
+ color:#fff8e7;
+ background:rgba(255,196,0,.08);
+ border:1px solid rgba(255,196,0,.4);
+ padding:12px 18px;
+ border-radius:14px;
+}
+.card{
+ background:linear-gradient(145deg,rgba(35,25,12,.95),rgba(12,9,5,.95));
+ border:1px solid rgba(255,196,0,.35);
+ border-radius:22px;
+ padding:25px;
+ margin:20px 0;
+ box-shadow:0 15px 40px rgba(0,0,0,.35), inset 0 0 30px rgba(255,196,0,.04);
+}
+.category{
+ color:#ffc400;
+ font-size:24px;
+ font-weight:900;
+ border-bottom:1px solid rgba(255,196,0,.2);
+ padding-bottom:10px;
+}
+.question{
+ color:#fff;
+ font-size:20px;
+ font-weight:800;
+ margin-top:20px;
+}
+.answer{
+ color:#ded3b5;
+ line-height:1.8;
+ font-size:16px;
+}
+.highlight{color:#ffc400;font-weight:900}
+.button{
+ display:inline-block;
+ margin:8px 5px 0 0;
+ padding:12px 18px;
+ border-radius:14px;
+ background:#ffc400;
+ color:#171000;
+ text-decoration:none;
+ font-weight:900;
+}
+.footer{
+ text-align:center;
+ color:#cdbd91;
+ margin-top:30px;
+}
 </style>
 </head>
+
 <body>
-<div class="wrap">
-<h1>🦆 AXBIM SHOP</h1>
+<div class="container">
+
+<div class="header">
+<div class="logo">🦆 AXBIM SHOP</div>
+<div class="sub">❓ FAQ CENTER | คำถามที่พบบ่อย</div>
+
+<div class="nav">
+<a href="./">⏰ เช็กสถานะฟาร์ม</a>
+<a href="./rules.html">📖 กฎการจ้างฟาร์ม</a>
+<a href="https://ducky.host/" target="_blank">🎮 Dashboard</a>
+</div>
+</div>
+
 <div class="card">
-<h2>❓ คำถามที่พบบ่อย (FAQ)</h2>
+<div class="category">⏰ เรื่องเวลาและสถานะฟาร์ม</div>
 
-<h2>❓ ทำไมจอถึงหลุด / จอเด้ง / เกมหลุด?</h2>
-<p>ไม่ต้องตกใจนะคะ ส่วนใหญ่เป็นการรีจอยหรือการเชื่อมต่อของระบบค่ะ หากเกิดจากโปรอัปเดต เครื่องดับ หรือระบบรันมีปัญหา ทางร้านจะแจ้งและดำเนินการชดเชยเวลาค่ะ</p>
+<div class="question">❓ เข้าไอดีแล้ว ทำไมเวลายังไม่เดิน?</div>
+<div class="answer">
+หลังจากร้านเข้าไอดีแล้ว ทางร้านจะมีขั้นตอนเตรียมระบบก่อนเริ่มฟาร์ม เช่น จัดการระบบ เตรียมการเชื่อมต่อ และป้องกันไอดีลูกค้าท่านอื่นชนกันค่ะ<br>
+ใช้เวลาไม่เกินประมาณ <span class="highlight">2 ชั่วโมง</span><br><br>
+เมื่อเริ่มฟาร์มแล้ว สถานะจะขึ้น:<br>
+🔵 <span class="highlight">กำลังฟาร์ม</span> = เริ่มนับเวลาแล้ว
+</div>
 
-<h2>❓ ทำไมเช็กแล้วไม่เห็นออน?</h2>
-<p>เป็นข้อจำกัดของตัวเกมค่ะ เนื่องจากระบบมีการรีจอย หากเข้าออกบ่อยหรือรีจอยถี่ สถานะในเกมอาจไม่แสดงทันที</p>
+<div class="question">❓ ทำไมเช็กแล้วไม่เห็นออน?</div>
+<div class="answer">
+เป็นข้อจำกัดของตัวเกมค่ะ เนื่องจากระบบมีการรีจอยเวลาจอหลุด หากเข้าออกบ่อยหรือรีจอยถี่ ๆ สถานะในเกมอาจไม่แสดงทันที
+</div>
 
-<h2>❓ อยากดูเวลาฟาร์มเหลือต้องดูที่ไหน?</h2>
-<p><a href="https://bibim11.github.io/Axbim-Farm-Status/">⏰ เช็กสถานะฟาร์ม</a></p>
+<div class="question">❓ อยากดูเวลาฟาร์มเหลือต้องดูที่ไหน?</div>
+<div class="answer">
+สามารถเช็กสถานะฟาร์มได้ที่:<br>
+<a class="button" href="./">⏰ เช็กสถานะฟาร์ม</a>
+</div>
+</div>
 
-<h2>❓ อยากดูข้อมูลในเกม เช่น เงิน / ไข่ / สัตว์ ต้องทำยังไง?</h2>
-<p>ทางร้านมี Dashboard สำหรับดูข้อมูลจากตัวเกม</p>
-<p><a href="https://ducky.host/share/zxr0sd">ดูข้อมูลในเกม (ตัวอย่าง)</a></p>
 
-<h2>❓ ถ้าอยากเข้าเล่นระหว่างฟาร์มได้ไหม?</h2>
-<p>สามารถเข้าเล่นได้ค่ะ แต่เวลาฟาร์มยังคงเดินตามปกติ เนื่องจากทางร้านไม่ทราบเวลาเข้าออก และมีงานลูกค้าท่านอื่นด้วย หากออกจากเกมแล้วอาจต้องรอคิวเพื่อดำเนินการต่อค่ะ</p>
+<div class="card">
+<div class="category">🎮 ระบบฟาร์ม</div>
 
-<h2>❓ ทำไมส่งข้อความใน TikTok ไม่ได้?</h2>
-<p>เนื่องจากระบบแชท TikTok มีข้อจำกัด สามารถติดต่อผ่าน Discord หรือ Facebook Page ได้ค่ะ</p>
+<div class="question">❓ ถ้าอยากเข้าเล่นระหว่างฟาร์มได้ไหม?</div>
+<div class="answer">
+สามารถเข้าเล่นได้ค่ะ แต่เวลาฟาร์มยังคงเดินตามปกติ<br><br>
+ทางร้านไม่สามารถทราบได้ว่าลูกค้าจะเข้าเล่นหรือออกจากเกมเวลาไหน และทางร้านมีงานฟาร์มของลูกค้าท่านอื่นด้วยค่ะ<br><br>
+หากออกจากเกมแล้ว ระบบอาจต้องรอคิวเพื่อให้ทางร้านกลับมาดำเนินการต่ออีกครั้ง
+</div>
 
-<h2>🛡️ ปัญหาและการชดเชย</h2>
-<p>หากเกิดจากระบบร้าน เช่น เครื่องดับ ระบบรันหยุด หรือโปรอัปเดต ทางร้านจะตรวจสอบและชดเชยเวลาตามความเหมาะสมค่ะ</p>
+<div class="question">❓ เลือกรูปแบบฟาร์มเปลี่ยนทีหลังได้ไหม?</div>
+<div class="answer">
+ไม่สามารถเปลี่ยนได้ค่ะ ลูกค้าต้องเลือกรูปแบบก่อนเริ่มงาน และหลังเริ่มฟาร์มแล้วจะใช้ระบบเดิมจนจบรอบ
+</div>
+</div>
+
+
+<div class="card">
+<div class="category">🎮 Dashboard ดูข้อมูลในเกม</div>
+
+<div class="question">❓ อยากดูข้อมูลในเกม เช่น เงิน / ไข่ / สัตว์ ต้องทำยังไง?</div>
+<div class="answer">
+ทางร้านมี Dashboard สำหรับดูข้อมูลจากตัวเกม เช่น<br>
+💰 เงินในเกม<br>
+🥚 ข้อมูลไข่<br>
+🐾 ข้อมูลสัตว์<br>
+📊 ข้อมูลต่าง ๆ ภายในเกม<br><br>
+
+<a class="button" href="https://ducky.host/share/zxr0sd" target="_blank">🎮 ตัวอย่างลิ้งค์ดูของในเกม</a><br><br>
 
 </div>
+</div>
+
+
+<div class="card">
+<div class="category">🖥️ ปัญหาระบบ</div>
+
+<div class="question">❓ ทำไมจอถึงหลุด / จอเด้ง / เกมหลุด?</div>
+<div class="answer">
+ไม่ต้องตกใจนะคะ ส่วนใหญ่เป็นการรีจอยหรือการเชื่อมต่อของระบบค่ะ<br><br>
+หากเกิดจากโปรอัปเดต เครื่องดับ หรือระบบรันมีปัญหา ทางร้านจะแจ้งและดำเนินการชดเชยเวลาค่ะ
+</div>
+
+<div class="question">❓ ทำไมส่งข้อความใน TikTok ไม่ได้?</div>
+<div class="answer">
+เนื่องจากระบบแชท TikTok มีข้อจำกัด สามารถติดต่อร้านผ่าน Discord หรือ Facebook Page ได้ค่ะ
+</div>
+</div>
+
+
+<div class="card">
+<div class="category">🛡️ ปัญหาและการชดเชย</div>
+<div class="answer">
+หากเกิดจากระบบร้าน เช่น เครื่องดับ ระบบรันหยุด หรือโปรอัปเดต ทางร้านจะตรวจสอบและดำเนินการชดเชยเวลาตามความเหมาะสมค่ะ 💛
+</div>
+</div>
+
+<div class="footer">
+🐥 ขอบคุณที่ใช้บริการ AXBIM SHOP 🦆💛
+</div>
+
 </div>
 </body>
 </html>
