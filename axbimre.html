@@ -112,6 +112,7 @@ footer{padding:28px 0 44px;text-align:center;color:var(--mute);font-size:14px}
 <section id="work">
   <h2>ผลงานที่เคยทำให้ลูกค้า</h2>
   <p class="sub">เลือกแมพและประเภทบริการเพื่อดูงานจริง</p>
+  <div class="work-total" aria-live="polite"><span class="work-total-icon">✦</span><span>รับงานฟาร์มแล้วทั้งหมด</span><strong id="totalJobs">0</strong><span>งาน</span></div>
   <div class="filters"><div class="row"><b>แมพ</b><span class="chips" id="fg" data-dyn=""></span></div><div class="row"><b>บริการ</b><span class="chips" id="fs" data-dyn=""></span></div></div>
   <div class="grid" id="grid" data-dyn=""></div>
 </section>
@@ -150,7 +151,7 @@ function openLightbox(src){
  ov.appendChild(im);ov.appendChild(x);ov.onclick=function(){ov.remove();};
  document.body.appendChild(ov);
 }
-function render(){var g=document.getElementById("grid");g.innerHTML="";
+function updateTotalJobs(){var el=document.getElementById("totalJobs");if(el)el.textContent=WORKS.length.toLocaleString("th-TH");}\nfunction render(){updateTotalJobs();var g=document.getElementById("grid");g.innerHTML="";
  var list=WORKS.filter(function(w){return (gs==="ทั้งหมด"||w.game===gs)&&(ss==="ทั้งหมด"||w.service===ss)});
  if(!list.length){g.innerHTML='<div class="empty">ยังไม่มีผลงานในหมวดนี้ ลองเลือกหมวดอื่นดูนะ</div>';return;}
  list.forEach(function(w){var c=document.createElement("article");c.className="card";var s=document.createElement("div");s.className="shot";
