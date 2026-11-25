@@ -98,6 +98,7 @@ footer{padding:28px 0 44px;text-align:center;color:var(--mute);font-size:14px}
 .dlbar button{border:0;cursor:pointer;font:inherit;font-weight:600;color:#fff;padding:10px 20px;border-radius:999px;background:linear-gradient(135deg,var(--pink),var(--vio))}
 .dlbar button:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:760px){.hero,.svc{grid-template-columns:1fr}.mascot{order:-1;width:200px}.links a.t{display:none}.hero h1{-webkit-text-stroke-width:8px}}
+.pager{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;padding:24px 0 8px}.pager .chip{min-width:42px}.pager .chip:disabled{opacity:.4;cursor:not-allowed}.pager .gap{color:var(--mute)}.pager small{width:100%;text-align:center;color:var(--mute)}
 </style>
 </head>
 <body>
@@ -124,6 +125,7 @@ footer{padding:28px 0 44px;text-align:center;color:var(--mute);font-size:14px}
   <div class="work-total" aria-live="polite"><span class="work-total-icon">✦</span><span>รับงานฟาร์มแล้วทั้งหมด</span><strong id="totalJobs">20</strong><span>งาน</span></div>
   <div class="filters"><div class="row"><b>แมพ</b><span class="chips" id="fg" data-dyn=""></span></div><div class="row"><b>บริการ</b><span class="chips" id="fs" data-dyn=""></span></div></div>
   <div class="grid" id="grid" data-dyn=""></div>
+  <div class="pager" id="pager" data-dyn></div>
 </section>
 
 <section id="contact">
@@ -151,9 +153,19 @@ var SVCS=["ฟาร์มหาของ","AFK","ขายของ"];
 var gs="ทั้งหมด",ss="ทั้งหมด",ADMIN=false,ART=null,AST=null;
 function uniq(a){return a.filter(function(v,i){return a.indexOf(v)===i});}
 function okImg(u){return typeof u==="string"&&/^(\/_blob\/|https:\/\/|data:image\/)/.test(u);}
-function chips(id,vals,cur,set){var el=document.getElementById(id);el.innerHTML="";["ทั้งหมด"].concat(vals).forEach(function(v){var b=document.createElement("button");b.className="chip";b.textContent=v;b.setAttribute("aria-pressed",v===cur?"true":"false");b.onclick=function(){set(v);filters();render();};el.appendChild(b);});}
+function chips(id,vals,cur,set){var el=document.getElementById(id);el.innerHTML="";["ทั้งหมด"].concat(vals).forEach(function(v){var b=document.createElement("button");b.className="chip";b.textContent=v;b.setAttribute("aria-pressed",v===cur?"true":"false");b.onclick=function(){set(v);PAGE=1;filters();render();};el.appendChild(b);});}
 function filters(){chips("fg",allGames(),gs,function(v){gs=v});chips("fs",SVCS.concat(uniq(WORKS.map(function(w){return w.service})).filter(function(s){return SVCS.indexOf(s)<0})),ss,function(v){ss=v});}
 function updateTotalJobs(){var el=document.getElementById("totalJobs");if(el)el.textContent=WORKS.length.toLocaleString("th-TH");}
+var PAGE=1,PER=20;
+function renderPager(pages,total){
+ var el=document.getElementById("pager");el.innerHTML="";if(pages<=1)return;
+ function btn(label,n,cur,dis){var b=document.createElement("button");b.className="chip";b.textContent=label;if(cur)b.setAttribute("aria-pressed","true");if(dis)b.disabled=true;
+  b.onclick=function(){PAGE=n;render();document.getElementById("work").scrollIntoView({behavior:"smooth"});};el.appendChild(b);}
+ btn("‹ ก่อนหน้า",PAGE-1,false,PAGE<=1);
+ var last=0;for(var i=1;i<=pages;i++){if(i===1||i===pages||Math.abs(i-PAGE)<=1){if(last&&i-last>1){var g=document.createElement("span");g.className="gap";g.textContent="…";el.appendChild(g);}btn(String(i),i,i===PAGE,false);last=i;}}
+ btn("ถัดไป ›",PAGE+1,false,PAGE>=pages);
+ var s=document.createElement("small");s.textContent="หน้า "+PAGE+" จาก "+pages+" · ทั้งหมด "+total+" งาน";el.appendChild(s);
+}
 function openLightbox(src){
  if(!okImg(src))return;
  var ov=document.createElement("div");ov.className="lightbox";ov.setAttribute("role","button");ov.setAttribute("aria-label","ปิดรูปภาพ");
@@ -167,9 +179,10 @@ function openLightbox(src){
 }
 function render(){updateTotalJobs();var g=document.getElementById("grid");g.innerHTML="";
  var list=WORKS.filter(function(w){return (gs==="ทั้งหมด"||w.game===gs)&&(ss==="ทั้งหมด"||w.service===ss)});
+ var total=list.length,pages=Math.max(1,Math.ceil(total/PER));if(PAGE>pages)PAGE=pages;list=list.slice((PAGE-1)*PER,PAGE*PER);renderPager(pages,total);
  if(!list.length){g.innerHTML='<div class="empty">'+(LOADED?"ยังไม่มีผลงานในหมวดนี้ ลองเลือกหมวดอื่นดูนะ":"กำลังโหลดผลงาน...")+'</div>';return;}
  list.forEach(function(w){var c=document.createElement("article");c.className="card";var s=document.createElement("div");s.className="shot";
-  if(okImg(w.img)){var i=document.createElement("img");i.src=w.img;i.alt=w.title;i.style.cursor="zoom-in";i.onclick=function(){openLightbox(w.img);};s.appendChild(i);}else{s.textContent=w.game;}
+  if(okImg(w.img)){var i=document.createElement("img");i.loading="lazy";i.src=w.img;i.alt=w.title;i.style.cursor="zoom-in";i.onclick=function(){openLightbox(w.img);};s.appendChild(i);}else{s.textContent=w.game;}
   var b=document.createElement("div");b.className="body";b.innerHTML='<div class="tags"><span class="tag"></span><span class="tag s"></span></div><h3></h3><p></p><p></p>';
   var t=b.querySelectorAll(".tag");t[0].textContent=w.game;t[1].textContent=w.service;b.querySelector("h3").textContent=w.title;
   var p=b.querySelectorAll("p");p[0].textContent=w.desc;p[1].textContent=w.time;
@@ -189,7 +202,7 @@ function renderMaps(){var el=document.getElementById("maps");el.innerHTML="";
   if(okImg(m.img)){var i=document.createElement("img");i.src=m.img;i.alt="แมพ "+m.name;i.style.cursor="zoom-in";i.onclick=function(){openLightbox(m.img);};s.appendChild(i);}else{s.textContent=m.name;}
   var b=document.createElement("div");b.className="body";var h=document.createElement("h3");h.textContent=m.name;b.appendChild(h);
   var go=document.createElement("button");go.className="chip";go.textContent="ดูผลงานแมพนี้";go.style.justifySelf="start";
-  go.onclick=function(){gs=m.name;filters();render();document.getElementById("work").scrollIntoView({behavior:"smooth"});};b.appendChild(go);
+  go.onclick=function(){gs=m.name;PAGE=1;filters();render();document.getElementById("work").scrollIntoView({behavior:"smooth"});};b.appendChild(go);
   if(ADMIN){var r=document.createElement("div");r.className="macts";
    var ch=document.createElement("button");ch.className="del";ch.textContent="เปลี่ยนรูป";
    var fi=document.createElement("input");fi.type="file";fi.accept="image/*";fi.style.display="none";
