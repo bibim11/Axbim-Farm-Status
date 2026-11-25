@@ -47,7 +47,16 @@ h2{font-family:"Mali",sans-serif;font-size:clamp(26px,4vw,36px);margin:0 0 6px;l
 .ask{background:var(--card);border:1.5px dashed var(--pink2);color:var(--ink)}
 .ask strong{color:var(--pink);font-size:30px}
 .filters{display:grid;gap:10px;margin-bottom:18px}
-.work-total{display:inline-flex;align-items:center;gap:9px;margin:0 0 20px;padding:11px 17px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(120deg,var(--card),var(--bg2));color:var(--mute);box-shadow:0 6px 20px var(--glow);font-size:14px}.work-total-icon{color:var(--pink);font-size:18px}.work-total strong{font-family:"Mali",sans-serif;font-size:25px;line-height:1;color:var(--pink)}
+.work-total{display:inline-flex;align-items:center;gap:9px;margin:0 0 20px;padding:11px 17px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(120deg,var(--card),var(--bg2));color:var(--mute);box-shadow:0 6px 20px var(--glow);font-size:14px}
+.work-total-icon{color:var(--pink);font-size:18px}
+.work-total strong{font-family:"Mali",sans-serif;font-size:25px;line-height:1;color:var(--pink)}
+.proofs{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.proof-thumb{width:88px;height:66px;object-fit:cover;border-radius:10px;border:2px solid var(--line);cursor:zoom-in}
+.proof-label{font-size:11px;color:var(--mute);display:block}
+.lightbox{position:fixed;inset:0;background:rgba(15,5,35,.9);z-index:100;display:grid;place-items:center;padding:18px;cursor:zoom-out}
+.lightbox img{max-width:min(100%,1100px);max-height:88vh;object-fit:contain;border-radius:14px;box-shadow:0 12px 50px #0008}
+.lightbox span{position:absolute;top:14px;right:18px;color:#fff;font-size:30px;line-height:1}
+
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .row b{font-weight:500;color:var(--mute);min-width:64px}
 .chip{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 15px;font:inherit;cursor:pointer}
@@ -84,7 +93,6 @@ footer{padding:28px 0 44px;text-align:center;color:var(--mute);font-size:14px}
 .del{border:1.5px solid var(--line);background:transparent;color:var(--mute);border-radius:999px;font:inherit;font-size:13px;padding:3px 12px;cursor:pointer;justify-self:start}
 .maps{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
 .mshot{aspect-ratio:4/3}
-.lightbox{position:fixed;inset:0;background:rgba(15,5,35,.9);z-index:100;display:grid;place-items:center;padding:18px;cursor:zoom-out}.lightbox img{max-width:min(100%,1100px);max-height:88vh;object-fit:contain;border-radius:14px;box-shadow:0 12px 50px #0008}.lightbox span{position:absolute;top:14px;right:18px;color:#fff;font-size:30px;line-height:1}
 .macts{display:flex;gap:8px;flex-wrap:wrap}
 .dlbar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:var(--nav);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);font-size:14px}
 .dlbar button{border:0;cursor:pointer;font:inherit;font-weight:600;color:#fff;padding:10px 20px;border-radius:999px;background:linear-gradient(135deg,var(--pink),var(--vio))}
@@ -144,17 +152,18 @@ function uniq(a){return a.filter(function(v,i){return a.indexOf(v)===i});}
 function okImg(u){return typeof u==="string"&&/^(\/_blob\/|https:\/\/|data:image\/)/.test(u);}
 function chips(id,vals,cur,set){var el=document.getElementById(id);el.innerHTML="";["ทั้งหมด"].concat(vals).forEach(function(v){var b=document.createElement("button");b.className="chip";b.textContent=v;b.setAttribute("aria-pressed",v===cur?"true":"false");b.onclick=function(){set(v);filters();render();};el.appendChild(b);});}
 function filters(){chips("fg",allGames(),gs,function(v){gs=v});chips("fs",SVCS.concat(uniq(WORKS.map(function(w){return w.service})).filter(function(s){return SVCS.indexOf(s)<0})),ss,function(v){ss=v});}
+function updateTotalJobs(){var el=document.getElementById("totalJobs");if(el)el.textContent=WORKS.length.toLocaleString("th-TH");}
 function openLightbox(src){
  if(!okImg(src))return;
  var ov=document.createElement("div");ov.className="lightbox";ov.setAttribute("role","button");ov.setAttribute("aria-label","ปิดรูปภาพ");
- var im=document.createElement("img");im.src=src;im.alt="ภาพผลงาน";
+ var im=document.createElement("img");im.src=src;im.alt="ภาพหลักฐานหรือผลงาน";
  var close=document.createElement("span");close.textContent="×";
  ov.appendChild(im);ov.appendChild(close);
  ov.onclick=function(){ov.remove();};
- document.addEventListener("keydown",function esc(e){if(e.key==="Escape"){ov.remove();document.removeEventListener("keydown",esc);}});
+ function esc(e){if(e.key==="Escape"){ov.remove();document.removeEventListener("keydown",esc);}}
+ document.addEventListener("keydown",esc);
  document.body.appendChild(ov);
 }
-function updateTotalJobs(){var el=document.getElementById("totalJobs");if(el)el.textContent=WORKS.length.toLocaleString("th-TH");}
 function render(){updateTotalJobs();var g=document.getElementById("grid");g.innerHTML="";
  var list=WORKS.filter(function(w){return (gs==="ทั้งหมด"||w.game===gs)&&(ss==="ทั้งหมด"||w.service===ss)});
  if(!list.length){g.innerHTML='<div class="empty">ยังไม่มีผลงานในหมวดนี้ ลองเลือกหมวดอื่นดูนะ</div>';return;}
@@ -163,6 +172,11 @@ function render(){updateTotalJobs();var g=document.getElementById("grid");g.inne
   var b=document.createElement("div");b.className="body";b.innerHTML='<div class="tags"><span class="tag"></span><span class="tag s"></span></div><h3></h3><p></p><p></p>';
   var t=b.querySelectorAll(".tag");t[0].textContent=w.game;t[1].textContent=w.service;b.querySelector("h3").textContent=w.title;
   var p=b.querySelectorAll("p");p[0].textContent=w.desc;p[1].textContent=w.time;
+  if(Array.isArray(w.proofs)&&w.proofs.length){
+   var gal=document.createElement("div");gal.className="proofs";
+   w.proofs.forEach(function(pr){if(!pr||!okImg(pr.img))return;var wrap=document.createElement("div");var im=document.createElement("img");im.className="proof-thumb";im.src=pr.img;im.alt=pr.label||"หลักฐาน";im.onclick=function(){openLightbox(pr.img);};var lab=document.createElement("span");lab.className="proof-label";lab.textContent=pr.label||"หลักฐาน";wrap.appendChild(im);wrap.appendChild(lab);gal.appendChild(wrap);});
+   if(gal.children.length)b.appendChild(gal);
+  }
   if(ADMIN){var d=document.createElement("button");d.className="del";d.textContent="ลบผลงานนี้";d.onclick=function(){if(confirm("ลบ “"+w.title+"” ใช่ไหม")){WORKS.splice(WORKS.indexOf(w),1);save();}};b.appendChild(d);}
   c.appendChild(s);c.appendChild(b);g.appendChild(c);});}
 
@@ -235,7 +249,15 @@ function openForm(){
  var fi=document.createElement("input");fi.type="file";fi.accept="image/*";
  var pv=document.createElement("img");pv.className="prev";pv.style.display="none";pv.alt="ตัวอย่างรูป";
  fi.onchange=function(){if(fi.files[0]){pv.src=URL.createObjectURL(fi.files[0]);pv.style.display="block";}};
- d.appendChild(field("หมวดแมพ",gsel));d.appendChild(gnew);d.appendChild(field("ประเภทบริการ",ssel));d.appendChild(field("ชื่อผลงาน",ti));d.appendChild(field("รายละเอียด",de));d.appendChild(field("ระยะเวลา",tm));d.appendChild(field("รูปผลงาน",fi));d.appendChild(pv);
+ var evidence=[];
+ [["สลิป/หลักฐานการจ้าง","receipt"],["ก่อนเริ่มฟาร์ม","before"],["หลังฟาร์มเสร็จ","after"]].forEach(function(item){
+  var inp=document.createElement("input");inp.type="file";inp.accept="image/*";
+  var preview=document.createElement("img");preview.className="prev";preview.style.display="none";preview.alt="ตัวอย่าง "+item[0];
+  inp.onchange=function(){if(inp.files[0]){preview.src=URL.createObjectURL(inp.files[0]);preview.style.display="block";}};
+  evidence.push({label:item[0],key:item[1],input:inp});
+  d.appendChild(field(item[0]+" (ไม่บังคับ)",inp));d.appendChild(preview);
+ });
+ d.appendChild(field("หมวดแมพ",gsel));d.appendChild(gnew);d.appendChild(field("ประเภทบริการ",ssel));d.appendChild(field("ชื่อผลงาน",ti));d.appendChild(field("รายละเอียด",de));d.appendChild(field("ระยะเวลา",tm));d.appendChild(field("รูปหน้าปกผลงาน (ไม่บังคับ)",fi));d.appendChild(pv);
  var msg=document.createElement("div");msg.className="msg";d.appendChild(msg);
  var acts=document.createElement("div");acts.className="acts";
  var no=document.createElement("button");no.className="no";no.textContent="ยกเลิก";no.onclick=function(){ov.remove();};
@@ -245,7 +267,9 @@ function openForm(){
   if(!game||!ti.value.trim()){msg.textContent="กรอกแมพและชื่อผลงานก่อนนะ";return;}
   go.disabled=true;msg.textContent="กำลังบันทึก...";
   try{var img="";if(fi.files[0]){var blob=await shrink(fi.files[0]);var up=await AST.upload(blob);img=up.url;}
-   WORKS.unshift({game:game,service:ssel.value,title:ti.value.trim(),desc:de.value.trim(),time:tm.value.trim(),img:img});
+   var proofs=[];
+   for(var j=0;j<evidence.length;j++){var item=evidence[j];if(item.input.files[0]){var pb=await shrink(item.input.files[0]);var pu=await AST.upload(pb);proofs.push({label:item.label,key:item.key,img:pu.url});}}
+   WORKS.unshift({game:game,service:ssel.value,title:ti.value.trim(),desc:de.value.trim(),time:tm.value.trim(),img:img,proofs:proofs});
    await save();
   }catch(e){go.disabled=false;msg.textContent="บันทึกไม่สำเร็จ ลองใหม่อีกครั้ง";}
  };
