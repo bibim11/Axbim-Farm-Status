@@ -3,6 +3,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AXBIMSHOP | บริการฟาร์ม Roblox</title>
+<meta name="description" content="AXBIMSHOP บริการฟาร์ม Roblox ปลอดภัย ไว้ใจได้ ดูผลงานจริงก่อนตัดสินใจจ้างได้เลย">
+<meta property="og:type" content="website"><meta property="og:site_name" content="AXBIMSHOP"><meta property="og:locale" content="th_TH"><meta property="og:title" content="AXBIMSHOP | บริการฟาร์ม Roblox"><meta property="og:description" content="AXBIMSHOP บริการฟาร์ม Roblox ปลอดภัย ไว้ใจได้ ดูผลงานจริงก่อนตัดสินใจจ้างได้เลย"><meta property="og:url" content="https://bibim11.github.io/Axbim-Farm-Status/axbimre"><meta property="og:image" content="https://bibim11.github.io/Axbim-Farm-Status/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#7a3cf0">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&amp;family=Prompt:wght@400;500;600&amp;display=swap">
 <style>
 :root{--bg:#fbf3ff;--bg2:#f1e2ff;--card:#fff;--ink:#2b1259;--mute:#6d5a94;--line:#ecd9ff;--pink:#ff4fa3;--pink2:#ff8cc8;--vio:#7a3cf0;--yel:#ffd23f;--yel-ink:#4a3200;--glow:rgba(255,79,163,.28);--nav:rgba(251,243,255,.8);
@@ -155,11 +157,19 @@ footer{border-top:1px solid var(--line);margin-top:24px}
 .ft p{margin:4px 0 0}.fl{display:grid;gap:6px;align-content:start}.fl a{color:var(--mute);text-decoration:none}.fl a:hover{color:var(--pink)}
 @media(max-width:760px){.ft{grid-template-columns:1fr 1fr}.ft>div:first-child{grid-column:1/-1}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+
+.tools{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 16px}.tools input,.tools select{font:inherit;padding:10px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--ink)}.tools input{flex:1;min-width:200px}
+a.chip{text-decoration:none;display:inline-block}#lg{font-size:12px;font-weight:600}
+.lb{position:fixed;inset:0;background:rgba(10,4,25,.92);z-index:80;display:grid;place-items:center}.lb img{max-width:92vw;max-height:82vh;border-radius:14px}.lbc{position:absolute;bottom:18px;color:#fff}
+.lb button{position:absolute;border:0;color:#fff;background:rgba(255,255,255,.16);width:48px;height:48px;border-radius:50%;font-size:28px;cursor:pointer}.lbx{top:16px;right:16px}.lbp{left:14px;top:50%}.lbn{right:14px;top:50%}
+.dlg.wide{width:min(760px,100%)}.ba{position:relative;line-height:0;border-radius:14px;overflow:hidden;touch-action:pan-y}.ba img{width:100%;display:block}.ba .top{position:absolute;inset:0;height:100%;object-fit:cover}
+.ba input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0}.ba .ln{position:absolute;top:0;bottom:0;width:3px;background:#fff;box-shadow:0 0 8px rgba(0,0,0,.6);pointer-events:none}
+.ba .tg2{position:absolute;top:8px;padding:2px 12px;border-radius:99px;background:rgba(0,0,0,.55);color:#fff;font-size:13px;line-height:1.7;pointer-events:none}
 </style>
 </head>
 <body>
 <div id="prog" aria-hidden="true"></div>
-<nav><div class="wrap"><a class="logo" href="#top">AXBIMSHOP</a><div class="links"><a class="t" href="#services">บริการ</a><a class="t" href="#work">ผลงาน</a><a class="t" href="#steps">ขั้นตอน</a><button class="tg" id="tg" aria-label="สลับธีมสว่างหรือมืด">◐</button><a class="btn" href="#contact">สั่งจ้าง</a></div></div></nav>
+<nav><div class="wrap"><a class="logo" href="#top">AXBIMSHOP</a><div class="links"><a class="t" href="#services">บริการ</a><a class="t" href="#work">ผลงาน</a><a class="t" href="#steps">ขั้นตอน</a><button class="tg" id="lg" aria-label="Language">EN</button><button class="tg" id="tg" aria-label="สลับธีมสว่างหรือมืด">◐</button><a class="btn" href="#contact">สั่งจ้าง</a></div></div></nav>
 <div class="wrap" id="top">
 <div class="hero"><div class="aurora" aria-hidden="true"><i></i><i></i><i></i><b class="sp s1">✦</b><b class="sp s2">♥</b><b class="sp s3">✦</b></div>
   <div>
@@ -195,8 +205,19 @@ footer{border-top:1px solid var(--line);margin-top:24px}
   <p class="sub">เลือกแมพและประเภทบริการเพื่อดูงานจริง</p>
   <div class="work-total" aria-live="polite"><span class="work-total-icon">✦</span><span>รับงานฟาร์มแล้วทั้งหมด</span><strong id="totalJobs">20</strong><span>งาน</span></div>
   <div class="filters"><div class="row"><b>แมพ</b><span class="chips" id="fg" data-dyn=""></span></div><div class="row"><b>บริการ</b><span class="chips" id="fs" data-dyn=""></span></div></div>
+  <div class="tools"><input id="q" type="search" placeholder="ค้นหาผลงาน..." aria-label="ค้นหาผลงาน"><select id="so" aria-label="เรียงผลงาน"><option value="def">เรียงตามร้านจัด</option><option value="new">ใหม่สุดก่อน</option><option value="old">เก่าสุดก่อน</option></select></div>
   <div class="grid" id="grid" data-dyn=""></div>
   <div class="pager" id="pager" data-dyn></div>
+</section>
+
+<section id="reviews">
+  <h2>รีวิวและเครดิตจากลูกค้า</h2>
+  <p class="sub">ดูรีวิวและเครดิตจริงจากลูกค้าที่เคยใช้บริการ ได้ที่ช่องทางของร้าน</p>
+  <div class="bento">
+    <div class="b"><i>📘</i><h3>Facebook เพจ</h3><p>รีวิวและโพสต์เครดิตลูกค้าบนเพจของร้าน</p><a class="chip" href="https://www.facebook.com/share/p/1JwfcLnq8s/" target="_blank" rel="noopener noreferrer">ดูโพสต์รีวิวบนเพจ</a></div>
+    <div class="b"><i>⭐</i><h3>Facebook หลัก</h3><p>รีวิวและเครดิตจากลูกค้าบน Facebook หลักของร้าน</p><a class="chip" href="https://www.facebook.com/share/p/1A71MbKNBU/" target="_blank" rel="noopener noreferrer">ดูโพสต์รีวิวบน Facebook หลัก</a></div>
+    <div class="b"><i>💬</i><h3>Discord ร้าน</h3><p>ห้องเครดิตและรีวิวจากลูกค้าในเซิร์ฟเวอร์ของร้าน</p><a class="chip" data-link="discord" href="#">เข้าเซิร์ฟเวอร์ Discord</a></div>
+  </div>
 </section>
 
 <section id="steps">
@@ -264,11 +285,13 @@ function openLightbox(src){
  document.body.appendChild(ov);
 }
 function render(){updateTotalJobs();var g=document.getElementById("grid");g.innerHTML="";
- var list=WORKS.filter(function(w){return (gs==="ทั้งหมด"||w.game===gs)&&(ss==="ทั้งหมด"||w.service===ss)});
+ var list=WORKS.filter(function(w){return (gs==="ทั้งหมด"||w.game===gs)&&(ss==="ทั้งหมด"||w.service===ss)&&(!QS||(w.title+" "+w.game+" "+w.desc).toLowerCase().indexOf(QS)>=0)});
+ if(SO==="new"||SO==="old"){list.sort(function(a,b){var r=a.created<b.created?1:a.created>b.created?-1:0;return SO==="new"?r:-r;});}
+ FIL=list.filter(function(w){return okImg(w.img)}).map(function(w){return w.img});
  var total=list.length,pages=Math.max(1,Math.ceil(total/PER));if(PAGE>pages)PAGE=pages;list=list.slice((PAGE-1)*PER,PAGE*PER);renderPager(pages,total);
  if(!list.length){g.innerHTML=LOADED?'<div class="empty">ยังไม่มีผลงานในหมวดนี้ ลองเลือกหมวดอื่นดูนะ</div>':'<div class="skel"></div>'.repeat(6);return;}
  list.forEach(function(w){var c=document.createElement("article");c.className="card";var s=document.createElement("div");s.className="shot";
-  if(okImg(w.img)){var i=document.createElement("img");i.loading="lazy";i.src=w.img;i.alt=w.title;i.style.cursor="zoom-in";i.onclick=function(){openLightbox(w.img);};s.appendChild(i);}else{s.textContent=w.game;}
+  if(okImg(w.img)){var i=document.createElement("img");i.loading="lazy";i.src=w.img;i.alt=w.title;i.style.cursor="zoom-in";i.onclick=function(){trackView(w);openLB(w.img,FIL);};s.appendChild(i);}else{s.textContent=w.game;}
   var b=document.createElement("div");b.className="body";b.innerHTML='<div class="tags"><span class="tag"></span><span class="tag s"></span></div><h3></h3><p></p><p></p>';
   var t=b.querySelectorAll(".tag");t[0].textContent=w.game;t[1].textContent=w.service;b.querySelector("h3").textContent=w.title;
   var p=b.querySelectorAll("p");p[0].textContent=w.desc;p[1].textContent=w.time;
@@ -277,7 +300,8 @@ function render(){updateTotalJobs();var g=document.getElementById("grid");g.inne
    w.proofs.forEach(function(pr){if(!pr||!okImg(pr.img))return;var wrap=document.createElement("div");var im=document.createElement("img");im.className="proof-thumb";im.src=pr.img;im.alt=pr.label||"หลักฐาน";im.onclick=function(){openLightbox(pr.img);};var lab=document.createElement("span");lab.className="proof-label";lab.textContent=pr.label||"หลักฐาน";wrap.appendChild(im);wrap.appendChild(lab);gal.appendChild(wrap);});
    if(gal.children.length)b.appendChild(gal);
   }
-  if(ADMIN){var d=document.createElement("button");d.className="del";d.textContent="ลบผลงานนี้";d.onclick=function(){if(confirm("ลบ “"+w.title+"” ใช่ไหม")){sb.from("portfolio_works").delete().eq("id",w.id).then(function(r){if(r.error)alert("ลบไม่สำเร็จ: "+r.error.message);save();});}};b.appendChild(d);var ev=document.createElement("button");ev.className="del";ev.textContent="ดูหลักฐาน";ev.onclick=function(){viewEvidence(w);};b.appendChild(ev);}
+  if(EV[w.id]){var e0=EV[w.id],bo=e0.before&&e0.after,lbl=bo?(e0.slip?"↔ ก่อน/หลัง และสลิป":"↔ เทียบก่อน/หลัง"):(e0.slip?"🧾 ดูสลิป":"");if(lbl){var ba=document.createElement("button");ba.className="chip";ba.textContent=lbl;ba.style.justifySelf="start";ba.onclick=function(){openBA(w);};b.appendChild(ba);}}
+  if(ADMIN){var d=document.createElement("button");d.className="del";d.textContent="ลบผลงานนี้";d.onclick=function(){if(confirm("ลบ “"+w.title+"” ใช่ไหม")){sb.from("portfolio_works").delete().eq("id",w.id).then(function(r){if(r.error)alert("ลบไม่สำเร็จ: "+r.error.message);save();});}};b.appendChild(d);var ev=document.createElement("button");ev.className="del";ev.textContent="ดูหลักฐาน";ev.onclick=function(){viewEvidence(w);};b.appendChild(ev);var vc=document.createElement("small");vc.textContent="👁 "+(VIEWS[w.id]||0)+" ครั้ง";vc.style.color="var(--mute)";b.appendChild(vc);}
   c.appendChild(s);c.appendChild(b);g.appendChild(c);});}
 
 var MAPS=[];try{MAPS=JSON.parse(document.getElementById("maps-data").textContent)||[];}catch(e){}
@@ -285,7 +309,7 @@ function allGames(){return uniq(MAPS.map(function(m){return m.name}).concat(WORK
 function renderMaps(){var el=document.getElementById("maps");el.innerHTML="";
  MAPS.forEach(function(m){var c=document.createElement("article");c.className="card";
   var s=document.createElement("div");s.className="shot mshot";
-  if(okImg(m.img)){var i=document.createElement("img");i.src=m.img;i.alt="แมพ "+m.name;i.style.cursor="zoom-in";i.onclick=function(){openLightbox(m.img);};s.appendChild(i);}else{s.textContent=m.name;}
+  if(okImg(m.img)){var i=document.createElement("img");i.src=m.img;i.alt="แมพ "+m.name;i.style.cursor="zoom-in";i.onclick=function(){openLB(m.img);};s.appendChild(i);}else{s.textContent=m.name;}
   var b=document.createElement("div");b.className="body";var h=document.createElement("h3");h.textContent=m.name;b.appendChild(h);
   var go=document.createElement("button");go.className="chip";go.textContent="ดูผลงานแมพนี้";go.style.justifySelf="start";
   go.onclick=function(){gs=m.name;PAGE=1;filters();render();document.getElementById("work").scrollIntoView({behavior:"smooth"});};b.appendChild(go);
@@ -341,7 +365,7 @@ function openForm(){
  var pv=document.createElement("img");pv.className="prev";pv.style.display="none";pv.alt="ตัวอย่างรูป";
  fi.onchange=function(){if(fi.files[0]){pv.src=URL.createObjectURL(fi.files[0]);pv.style.display="block";}};
  var evidence=[];
- [["สลิป/หลักฐานการจ้าง","slip"],["ก่อนเริ่มฟาร์ม","before"],["หลังฟาร์มเสร็จ","after"]].forEach(function(item){
+ [["สลิป (ลูกค้าทุกคนจะเห็น ต้องปิดชื่อ เลขบัญชี และ QR ก่อนอัปโหลด)","slip"],["ก่อนเริ่มฟาร์ม (ลูกค้าเห็น)","before"],["หลังฟาร์มเสร็จ (ลูกค้าเห็น)","after"]].forEach(function(item){
   var inp=document.createElement("input");inp.type="file";inp.accept="image/*";
   var preview=document.createElement("img");preview.className="prev";preview.style.display="none";preview.alt="ตัวอย่าง "+item[0];
   inp.onchange=function(){if(inp.files[0]){preview.src=URL.createObjectURL(inp.files[0]);preview.style.display="block";}};
@@ -374,7 +398,8 @@ async function load(){
   var m=await sb.from("portfolio_maps").select("*").order("sort_order",{ascending:true}).order("created_at",{ascending:true});
   var w=await sb.from("portfolio_works").select("*").order("sort_order",{ascending:true}).order("created_at",{ascending:false});
   if(!m.error)MAPS=m.data.map(function(x){return {id:x.id,name:x.title,img:cov(x.image_path)};});
-  if(!w.error)WORKS=w.data.map(function(x){return {id:x.id,game:x.game||"",service:x.service||"",title:x.title||"",desc:x.description||"",time:x.duration||"",img:cov(x.cover_path)};});
+  if(!w.error)WORKS=w.data.map(function(x){return {id:x.id,game:x.game||"",service:x.service||"",title:x.title||"",desc:x.description||"",time:x.duration||"",img:cov(x.cover_path),created:x.created_at||""};});
+  var ev=await sb.from("portfolio_evidence").select("work_id,evidence_type,file_path").in("evidence_type",["before","after","slip"]);EV={};if(!ev.error&&ev.data)ev.data.forEach(function(r){(EV[r.work_id]=EV[r.work_id]||{})[r.evidence_type]=r.file_path;});
  }catch(e){}}
  LOADED=true;filters();render();renderMaps();buildMarquee();
 }
@@ -418,7 +443,7 @@ function loginForm(){
  acts.appendChild(no);acts.appendChild(go);d.appendChild(acts);document.body.appendChild(ov);em.focus();
 }
 function enterAdmin(){
- if(ADMIN)return;ADMIN=true;document.body.classList.add("is-admin");
+ if(ADMIN)return;ADMIN=true;document.body.classList.add("is-admin");loadViews();
  var bar=document.createElement("div");bar.className="adminbar";bar.setAttribute("data-admin","");
  var bt=document.createElement("button");bt.textContent="+ เพิ่มผลงาน";bt.onclick=openForm;
  var sm=document.createElement("small");sm.textContent="โหมดแอดมิน: บันทึกแล้วขึ้นเว็บทันที ไม่ต้องอัปโหลดไฟล์ใหม่";
@@ -436,6 +461,56 @@ async function initAdmin(){
  if(await isAdmin()){await load();enterAdmin();}else loginForm();
 }
 window.addEventListener("hashchange",initAdmin);
+var EV={},VIEWS={},QS="",SO="def",FIL=[];
+var CF_TOKEN="";/* ใส่ token ของ Cloudflare Web Analytics ที่นี่ */
+if(CF_TOKEN){var cs=document.createElement("script");cs.defer=true;cs.src="https://static.cloudflareinsights.com/beacon.min.js";cs.setAttribute("data-cf-beacon",JSON.stringify({token:CF_TOKEN}));document.head.appendChild(cs);}
+function trackView(w){if(!sb||!w||!w.id||ADMIN)return;try{var k="v"+w.id;if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1");sb.from("portfolio_views").insert({work_id:w.id}).then(function(){});}catch(e){}}
+async function loadViews(){var r=await sb.rpc("portfolio_view_counts");VIEWS={};if(!r.error&&r.data)r.data.forEach(function(x){VIEWS[x.work_id]=Number(x.views);});render();}
+function openLB(src,list){
+ if(!okImg(src))return;list=(list&&list.length)?list:[src];var i=Math.max(0,list.indexOf(src));
+ var ov=document.createElement("div");ov.className="lb";ov.setAttribute("role","dialog");ov.setAttribute("aria-label","ดูรูปภาพ");
+ var im=document.createElement("img"),ct=document.createElement("span");ct.className="lbc";
+ function show(n){i=(n+list.length)%list.length;im.src=list[i];im.alt="ผลงาน";ct.textContent=list.length>1?(i+1)+" / "+list.length:"";}
+ function close(){ov.remove();document.removeEventListener("keydown",key);}
+ function key(e){if(e.key==="Escape")close();else if(e.key==="ArrowLeft")show(i-1);else if(e.key==="ArrowRight")show(i+1);}
+ function btn(c,tx,f,lb){var b=document.createElement("button");b.className=c;b.textContent=tx;b.setAttribute("aria-label",lb);b.onclick=function(e){e.stopPropagation();f();};ov.appendChild(b);}
+ ov.appendChild(im);ov.appendChild(ct);btn("lbx","×",close,"ปิด");
+ if(list.length>1){btn("lbp","‹",function(){show(i-1);},"รูปก่อนหน้า");btn("lbn","›",function(){show(i+1);},"รูปถัดไป");}
+ var x0=null;ov.addEventListener("touchstart",function(e){x0=e.touches[0].clientX;},{passive:true});
+ ov.addEventListener("touchend",function(e){if(x0===null)return;var d=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(d)>50)show(i+(d<0?1:-1));});
+ ov.onclick=close;im.onclick=function(e){e.stopPropagation();};document.addEventListener("keydown",key);document.body.appendChild(ov);show(i);
+}
+async function openBA(w){
+ var e=EV[w.id];if(!e)return;var st=sb.storage.from("work-evidence");
+ async function su(p){if(!p)return null;var r=await st.createSignedUrl(p,600);return r.data?r.data.signedUrl:null;}
+ var ua=await su(e.before),ub=await su(e.after),us=await su(e.slip),both=ua&&ub;
+ if(!both&&!us){alert("โหลดรูปไม่สำเร็จ");return;}
+ var ov=document.createElement("div");ov.className="ov";var d=document.createElement("div");d.className="dlg wide";ov.appendChild(d);
+ var h=document.createElement("h3");h.textContent="หลักฐานงาน: "+w.title;d.appendChild(h);
+ if(both){
+  var bx=document.createElement("div");bx.className="ba";
+  var ib=document.createElement("img");ib.src=ub;ib.alt="หลัง";var ia=document.createElement("img");ia.src=ua;ia.alt="ก่อน";ia.className="top";
+  var ln=document.createElement("div");ln.className="ln";var rg=document.createElement("input");rg.type="range";rg.min=0;rg.max=100;rg.value=50;rg.setAttribute("aria-label","เลื่อนเทียบก่อนและหลัง");
+  var tg2=function(tx,side){var s=document.createElement("span");s.className="tg2";s.textContent=tx;s.style[side]="8px";return s;};
+  var set=function(){ia.style.clipPath="inset(0 "+(100-rg.value)+"% 0 0)";ln.style.left="calc("+rg.value+"% - 1px)";};
+  rg.oninput=set;set();[ib,ia,ln,tg2("ก่อน","left"),tg2("หลัง","right"),rg].forEach(function(x){bx.appendChild(x);});d.appendChild(bx);
+ }
+ if(us){var sh=document.createElement("h3");sh.textContent="สลิปการชำระเงิน";sh.style.fontSize="16px";d.appendChild(sh);
+  var si=document.createElement("img");si.src=us;si.alt="สลิปการชำระเงิน";si.className="prev";si.style.cssText="cursor:zoom-in;max-height:320px;object-fit:contain";si.onclick=function(){openLB(us);};d.appendChild(si);}
+ var no=document.createElement("button");no.className="no";no.textContent="ปิด";no.onclick=function(){ov.remove();};d.appendChild(no);
+ ov.onclick=function(ev){if(ev.target===ov)ov.remove();};document.body.appendChild(ov);
+}
+var TR={"บริการ": "Services", "ผลงาน": "Portfolio", "ขั้นตอน": "How to order", "สั่งจ้าง": "Order", "รับงานฟาร์ม Roblox หลายแมพ": "Roblox farming across many maps", "บริการฟาร์ม Roblox ปลอดภัย ไว้ใจได้ ดูผลงานจริงก่อนตัดสินใจจ้างได้เลย": "A trusted, safe Roblox farming service. See real work before you hire.", "บริการฟาร์ม Roblox ปลอดภัย ไว้ใจได้": "A trusted, safe Roblox farming service", "ทักสั่งจ้าง": "Message us to order", "ดูผลงาน": "View work", "งานที่รับแล้ว": "Jobs taken", "แมพที่รับฟาร์ม": "Maps we farm", "รูปแบบบริการ": "Service types", "บริการของร้าน": "Our services", "เลือกบริการที่ต้องการ แล้วดูผลงานจริงของแต่ละแบบได้เลย": "Pick a service and see real work for each.", "ฟาร์มหาของ": "Item farming", "ฟาร์มเลเวล เงิน หรือไอเทมตามที่ตกลงกันไว้": "Levels, money or items as agreed.", "จ้าง AFK": "AFK hire", "เปิดฟาร์มต่อเนื่องตามชั่วโมงที่เลือก เช่น ตีไก่ ขุดแร่ ตกปลา เก็บไข่ เก็บดาว": "Non-stop farming for the hours you choose, e.g. chickens, mining, fishing, eggs, stars.", "ขายของ": "Item sales", "ไอเทมพร้อมส่ง ทักสอบถามสต็อกและราคาได้เลย": "Items ready to ship. Message us for stock and prices.", "ดูผลงานบริการนี้": "See work for this service", "เลือกแมพที่สนใจ แล้วกดดูผลงานที่เคยทำในแมพนั้นได้เลย": "Pick a map to see our past work on it.", "ดูผลงานแมพนี้": "See work on this map", "ผลงานที่เคยทำให้ลูกค้า": "Work we’ve done for customers", "เลือกแมพและประเภทบริการเพื่อดูงานจริง": "Filter by map and service to see real work.", "รับงานฟาร์มแล้วทั้งหมด": "Total farming jobs taken", "งาน": "jobs", "แมพ": "Map", "ทั้งหมด": "All", "เรียงตามร้านจัด": "Default order", "ใหม่สุดก่อน": "Newest first", "เก่าสุดก่อน": "Oldest first", "↔ เทียบก่อน/หลัง": "↔ Before / after", "↔ ก่อน/หลัง และสลิป": "↔ Before / after & slip", "🧾 ดูสลิป": "🧾 View slip", "ดูโพสต์รีวิวบนเพจ": "See the review post on our page", "Facebook หลัก": "Main Facebook", "รีวิวและเครดิตจากลูกค้าบน Facebook หลักของร้าน": "Customer reviews and credits on our main Facebook.", "ดูโพสต์รีวิวบน Facebook หลัก": "See reviews on main Facebook", "‹ ก่อนหน้า": "‹ Prev", "ถัดไป ›": "Next ›", "ยังไม่มีผลงานในหมวดนี้ ลองเลือกหมวดอื่นดูนะ": "No work in this category yet. Try another one.", "รีวิวและเครดิตจากลูกค้า": "Customer reviews & credits", "ดูรีวิวและเครดิตจริงจากลูกค้าที่เคยใช้บริการ ได้ที่ช่องทางของร้าน": "See real reviews and credits from past customers on our channels.", "Facebook เพจ": "Facebook page", "รีวิวและโพสต์เครดิตลูกค้าบนเพจของร้าน": "Reviews and customer credit posts on our page.", "ไปที่เพจ Facebook": "Go to Facebook page", "Discord ร้าน": "Our Discord", "ห้องเครดิตและรีวิวจากลูกค้าในเซิร์ฟเวอร์ของร้าน": "Customer credit and review channels in our server.", "เข้าเซิร์ฟเวอร์ Discord": "Join our Discord", "ขั้นตอนการสั่งจ้าง": "How to order", "ง่าย ๆ เพียง 4 ขั้นตอน": "Just 4 simple steps", "ทักแชท": "Message us", "บอกแมพและบริการที่ต้องการ": "Tell us the map and service", "ตกลงรายละเอียด": "Agree on details", "ยืนยันงาน ราคา และระยะเวลา": "Confirm the job, price and time", "ชำระเงิน": "Payment", "โอนเงินและส่งสลิปให้ร้าน": "Transfer and send us the slip", "เริ่มงานและส่งมอบ": "Start and delivery", "ฟาร์มเสร็จแล้วส่งมอบให้ตรวจสอบ": "We deliver when done for you to check", "พร้อมจ้างแล้วใช่ไหม": "Ready to hire?", "ทักมาบอกแมพและบริการที่ต้องการ แล้วเราจะแจ้งขั้นตอนให้": "Tell us the map and service and we’ll walk you through the steps.", "💬 ทักสั่งจ้าง": "💬 Order now"},LANG="th",ORIG=new WeakMap();
+function trNode(n){var s=n.nodeValue,k=s.trim();if(!k)return;
+ if(LANG==="en"){var v=TR[k];if(!v){var m=k.match(/^หน้า (\d+) จาก (\d+) · ทั้งหมด (\d+) งาน$/);if(m)v="Page "+m[1]+" of "+m[2]+" · "+m[3]+" jobs";}if(v){if(!ORIG.has(n))ORIG.set(n,s);n.nodeValue=s.replace(k,v);}}
+ else if(ORIG.has(n)){n.nodeValue=ORIG.get(n);ORIG.delete(n);}}
+function trAll(root){var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),n;while(n=w.nextNode()){if(/^(SCRIPT|STYLE)$/.test(n.parentNode.nodeName))continue;trNode(n);}}
+function setLang(l){LANG=l;document.documentElement.lang=l;trAll(document.body);document.getElementById("q").placeholder=l==="en"?"Search work...":"ค้นหาผลงาน...";document.getElementById("lg").textContent=l==="en"?"ไทย":"EN";try{localStorage.setItem("axb-lang",l);}catch(e){}}
+new MutationObserver(function(ms){if(LANG!=="en")return;ms.forEach(function(m){m.addedNodes.forEach(function(a){if(a.nodeType===3)trNode(a);else if(a.nodeType===1)trAll(a);});});}).observe(document.body,{childList:true,subtree:true});
+document.getElementById("lg").onclick=function(){setLang(LANG==="th"?"en":"th");};
+document.getElementById("q").oninput=function(){QS=this.value.trim().toLowerCase();PAGE=1;render();};
+document.getElementById("so").onchange=function(){SO=this.value;PAGE=1;render();};
+try{if(localStorage.getItem("axb-lang")==="en")setLang("en");}catch(e){}
 function buildMarquee(){var g=allGames(),el=document.getElementById("mq");if(!el||!g.length)return;el.innerHTML="";
  for(var r=0;r<2;r++){var d=document.createElement("div");d.className="mq-in";for(var k=0;k<4;k++)g.forEach(function(n){var s=document.createElement("span");s.textContent="✦ "+n;d.appendChild(s);});el.appendChild(d);}}
 (function(){
