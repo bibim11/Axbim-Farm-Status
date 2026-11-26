@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ปิดข้อมูลบนสลิป | AXBIMSHOP</title>
+<style>body{font-family:system-ui,"Noto Sans Thai",sans-serif;max-width:600px;margin:32px auto;padding:0 16px;background:#fbf3ff;color:#2b1259;line-height:1.6}h1{font-size:24px;color:#e0368a}input,button{font:inherit}
+.btn,.go{display:inline-block;border:0;cursor:pointer;color:#fff;text-decoration:none;font-weight:600;padding:11px 22px;border-radius:999px;background:linear-gradient(135deg,#ff4fa3,#7a3cf0)}
+.no{border:1.5px solid #ecd9ff;background:#fff;color:#2b1259;padding:10px 18px;border-radius:999px;cursor:pointer}
+.ov{position:fixed;inset:0;background:rgba(20,8,45,.7);display:grid;place-items:center;padding:12px;z-index:9}
+.dlg{background:#fff;border-radius:22px;padding:18px;width:min(760px,100%);max-height:94vh;overflow:auto;display:grid;gap:10px}.dlg h3{margin:0}
+.acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}#out{margin-top:20px;display:grid;gap:12px}#out img{max-width:100%;border-radius:12px;border:1px solid #ecd9ff}</style></head><body>
+<h1>ปิดชื่อ เลขบัญชี และ QR บนสลิป</h1>
+<p>เลือกรูปสลิป แล้วลากวาดกล่องดำทับข้อมูลส่วนตัว จากนั้นดาวน์โหลดรูปใหม่ไปอัปโหลดต่อ <b>รูปไม่ถูกส่งไปที่ใด</b> ทำงานในเครื่องของคุณเท่านั้น และรูปที่ได้จะไม่มีข้อมูลแฝง (เช่น พิกัดหรือชื่อรุ่นมือถือ) ติดไปด้วย</p>
+<input type="file" id="f" accept="image/*"><div id="out"></div>
+<script>
+function openRedactor(file,title){
+ return new Promise(async function(res){
+  var bm;try{bm=await createImageBitmap(file);}catch(e){alert("เปิดรูปนี้ไม่ได้");res(null);return;}
+  var sc=Math.min(1,1600/Math.max(bm.width,bm.height)),cv=document.createElement("canvas");cv.width=Math.round(bm.width*sc);cv.height=Math.round(bm.height*sc);
+  var cx=cv.getContext("2d"),R=[],cur=null,st=null;
+  function draw(){cx.drawImage(bm,0,0,cv.width,cv.height);cx.fillStyle="#000";(cur?R.concat([cur]):R).forEach(function(r){cx.fillRect(r.x,r.y,r.w,r.h);});}
+  function pt(e){var r=cv.getBoundingClientRect();return {x:Math.max(0,Math.min(cv.width,(e.clientX-r.left)*cv.width/r.width)),y:Math.max(0,Math.min(cv.height,(e.clientY-r.top)*cv.height/r.height))};}
+  draw();
+  var ov=document.createElement("div");ov.className="ov";var d=document.createElement("div");d.className="dlg wide";ov.appendChild(d);
+  var h=document.createElement("h3");h.textContent="ปิดข้อมูลบนรูป";d.appendChild(h);
+  var hint=document.createElement("div");hint.style.cssText="font-size:14px;opacity:.85";hint.textContent="ลากนิ้วหรือเมาส์เพื่อวาดกล่องดำทึบทับ ชื่อ เลขบัญชี QR และเลขอ้างอิง (ปิดแล้วกู้กลับไม่ได้) ปิดให้หมดแล้วกด “เสร็จ”";d.appendChild(hint);
+  cv.style.cssText="display:block;margin:0 auto;max-width:100%;max-height:60vh;touch-action:none;cursor:crosshair;border-radius:12px;background:#222";
+  cv.onpointerdown=function(e){st=pt(e);cv.setPointerCapture(e.pointerId);cur={x:st.x,y:st.y,w:0,h:0};draw();};
+  cv.onpointermove=function(e){if(!st)return;var p=pt(e);cur={x:Math.min(st.x,p.x),y:Math.min(st.y,p.y),w:Math.abs(p.x-st.x),h:Math.abs(p.y-st.y)};draw();};
+  cv.onpointerup=function(){if(cur&&cur.w>4&&cur.h>4)R.push(cur);cur=null;st=null;draw();};
+  d.appendChild(cv);
+  var acts=document.createElement("div");acts.className="acts";
+  function b(c,tx,f){var x=document.createElement("button");x.className=c;x.textContent=tx;x.onclick=f;acts.appendChild(x);return x;}
+  b("no","ยกเลิก",function(){ov.remove();res(null);});
+  b("no","ย้อนกลับ 1 กล่อง",function(){R.pop();draw();});
+  b("no","ล้างทั้งหมด",function(){R=[];draw();});
+  b("go","เสร็จ — ใช้รูปนี้",function(){
+   if(!R.length&&!confirm("ยังไม่ได้ปิดข้อมูลใด ๆ เลย ยืนยันว่ารูปนี้ไม่มีข้อมูลส่วนตัวใช่ไหม"))return;
+   draw();cv.toBlob(function(bl){ov.remove();res(bl);},"image/jpeg",0.9);});
+  d.appendChild(acts);document.body.appendChild(ov);
+ });
+}
+
+var f=document.getElementById("f"),out=document.getElementById("out");
+f.onchange=async function(){out.innerHTML="";if(!f.files[0])return;var bl=await openRedactor(f.files[0]);f.value="";if(!bl)return;
+ var u=URL.createObjectURL(bl),im=document.createElement("img");im.src=u;im.alt="สลิปที่ปิดข้อมูลแล้ว";
+ var a=document.createElement("a");a.className="btn";a.href=u;a.download="slip-covered.jpg";a.textContent="ดาวน์โหลดรูปที่ปิดข้อมูลแล้ว";out.appendChild(im);out.appendChild(a);};
+</script></body></html>
