@@ -318,7 +318,7 @@ function renderMaps(){var el=document.getElementById("maps");el.innerHTML="";
    var ch=document.createElement("button");ch.className="del";ch.textContent="เปลี่ยนรูป";
    var fi=document.createElement("input");fi.type="file";fi.accept="image/*";fi.style.display="none";
    ch.onclick=function(){fi.click();};
-   fi.onchange=async function(){if(!fi.files[0])return;ch.textContent="กำลังอัปโหลด...";try{var ip=await uploadFile("work-covers","maps",await shrink(fi.files[0]));var r=await sb.from("portfolio_maps").update({image_path:ip}).eq("id",m.id);if(r.error)throw r.error;if(m.path)await sb.storage.from("work-covers").remove([m.path]);await save();}catch(e){ch.textContent="ไม่สำเร็จ ลองใหม่";}};
+   fi.onchange=async function(){if(!fi.files[0])return;ch.textContent="กำลังอัปโหลด...";try{var ip=await uploadFile("work-covers","maps",await shrink(fi.files[0]),await hashFile(fi.files[0]));var r=await sb.from("portfolio_maps").update({image_path:ip}).eq("id",m.id);if(r.error)throw r.error;if(m.path&&!(await used(m.path)))await sb.storage.from("work-covers").remove([m.path]);await save();}catch(e){ch.textContent="ไม่สำเร็จ ลองใหม่";}};
    var dl=document.createElement("button");dl.className="del";dl.textContent="ลบแมพ";
    dl.onclick=function(){if(confirm("ลบแมพ “"+m.name+"” ใช่ไหม (ผลงานที่ใส่ไว้ไม่ถูกลบ)")){delMap(m);}};
    r.appendChild(ch);r.appendChild(fi);r.appendChild(dl);b.appendChild(r);}
@@ -338,7 +338,7 @@ function openMapForm(){
  var go=document.createElement("button");go.className="go";go.textContent="บันทึกแมพ";
  go.onclick=async function(){var n=ni.value.trim();if(!n){msg.textContent="ใส่ชื่อแมพก่อนนะ";return;}
   go.disabled=true;msg.textContent="กำลังบันทึก...";
-  try{var ip="";if(fi.files[0]){ip=await uploadFile("work-covers","maps",await shrink(fi.files[0]));}var r=await sb.from("portfolio_maps").insert({title:n,image_path:ip||null,sort_order:MAPS.length+1});if(r.error)throw r.error;await save();}
+  try{var ip="";if(fi.files[0]){ip=await uploadFile("work-covers","maps",await shrink(fi.files[0]),await hashFile(fi.files[0]));}var r=await sb.from("portfolio_maps").insert({title:n,image_path:ip||null,sort_order:MAPS.length+1});if(r.error)throw r.error;await save();}
   catch(e){go.disabled=false;msg.textContent="บันทึกไม่สำเร็จ ลองใหม่อีกครั้ง";}};
  acts.appendChild(no);acts.appendChild(go);d.appendChild(acts);document.body.appendChild(ov);
 }
@@ -383,7 +383,7 @@ function openForm(){
   var game=gsel.value==="+ แมพใหม่"?gnew.value.trim():gsel.value;
   if(!game||!ti.value.trim()){msg.textContent="กรอกแมพและชื่อผลงานก่อนนะ";return;}
   go.disabled=true;msg.textContent="กำลังบันทึก...";
-  try{var cp="";if(fi.files[0]){cp=await uploadFile("work-covers","covers",await shrink(fi.files[0]));}
+  try{var cp="";if(fi.files[0]){cp=await uploadFile("work-covers","covers",await shrink(fi.files[0]),await hashFile(fi.files[0]));}
    var r=await sb.from("portfolio_works").insert({title:ti.value.trim(),game:game,service:ssel.value,duration:tm.value.trim(),description:de.value.trim(),cover_path:cp||null,is_published:true,sort_order:0}).select("id").single();
    if(r.error)throw r.error;
    for(var j=0;j<evidence.length;j++){var it=evidence[j];if(it.blob){var ep=await uploadFile("work-evidence",r.data.id,it.blob);var e2=await sb.from("portfolio_evidence").insert({work_id:r.data.id,evidence_type:it.key,file_path:ep});if(e2.error)throw e2.error;}}
@@ -405,10 +405,14 @@ async function load(){
  }catch(e){}}
  LOADED=true;filters();render();renderMaps();buildMarquee();
 }
-async function uploadFile(bucket,folder,blob){
- var p=folder+"/"+Date.now()+"-"+Math.random().toString(36).slice(2,8)+"."+(blob.type==="image/webp"?"webp":blob.type==="image/png"?"png":"jpg");
+async function hashFile(f){try{var h=await crypto.subtle.digest("SHA-256",await f.arrayBuffer());return [].slice.call(new Uint8Array(h)).map(function(x){return x.toString(16).padStart(2,"0");}).join("").slice(0,24);}catch(e){return "";}}
+async function used(p){var a=await sb.from("portfolio_works").select("id",{count:"exact",head:true}).eq("cover_path",p);var b=await sb.from("portfolio_maps").select("id",{count:"exact",head:true}).eq("image_path",p);return (a.count||0)+(b.count||0)>0;}
+async function uploadFile(bucket,folder,blob,key){
+ var ex=blob.type==="image/webp"?"webp":blob.type==="image/png"?"png":"jpg";
+ var p=folder+"/"+(key||(Date.now()+"-"+Math.random().toString(36).slice(2,8)))+"."+ex;
  var r=await sb.storage.from(bucket).upload(p,blob,{contentType:blob.type||"image/jpeg",cacheControl:"31536000"});
- if(r.error)throw r.error;return p;
+ if(r.error){var m=(r.error.message||"")+" "+(r.error.statusCode||"");if(/exist|409|duplicate/i.test(m))return p;throw r.error;}
+ return p;
 }
 async function viewEvidence(w){
  var r=await sb.from("portfolio_evidence").select("*").eq("work_id",w.id);
@@ -531,14 +535,14 @@ async function delWork(w){
  var ev=await sb.from("portfolio_evidence").select("file_path").eq("work_id",w.id);
  var r=await sb.from("portfolio_works").delete().eq("id",w.id);
  if(r.error){alert("ลบไม่สำเร็จ: "+r.error.message);return;}
- if(w.path)await sb.storage.from("work-covers").remove([w.path]);
+ if(w.path&&!(await used(w.path)))await sb.storage.from("work-covers").remove([w.path]);
  if(ev.data&&ev.data.length)await sb.storage.from("work-evidence").remove(ev.data.map(function(x){return x.file_path;}));
  save();
 }
 async function delMap(m){
  var r=await sb.from("portfolio_maps").delete().eq("id",m.id);
  if(r.error){alert("ลบไม่สำเร็จ: "+r.error.message);return;}
- if(m.path)await sb.storage.from("work-covers").remove([m.path]);
+ if(m.path&&!(await used(m.path)))await sb.storage.from("work-covers").remove([m.path]);
  save();
 }
 function openRedactor(file,title){
