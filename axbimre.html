@@ -165,6 +165,7 @@ a.chip{text-decoration:none;display:inline-block}#lg{font-size:12px;font-weight:
 .dlg.wide{width:min(760px,100%)}.ba{position:relative;line-height:0;border-radius:14px;overflow:hidden;touch-action:pan-y}.ba img{width:100%;display:block}.ba .top{position:absolute;inset:0;height:100%;object-fit:cover}
 .ba input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0}.ba .ln{position:absolute;top:0;bottom:0;width:3px;background:#fff;box-shadow:0 0 8px rgba(0,0,0,.6);pointer-events:none}
 .ba .tg2{position:absolute;top:8px;padding:2px 12px;border-radius:99px;background:rgba(0,0,0,.55);color:#fff;font-size:13px;line-height:1.7;pointer-events:none}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--card);color:var(--ink);border:1px solid var(--pink2);padding:10px 18px;border-radius:999px;box-shadow:0 10px 30px var(--glow);z-index:90;font-size:14px;max-width:92vw;text-align:center}
 </style>
 </head>
 <body>
@@ -301,7 +302,7 @@ function render(){updateTotalJobs();var g=document.getElementById("grid");g.inne
    if(gal.children.length)b.appendChild(gal);
   }
   if(EV[w.id]){var e0=EV[w.id],bo=e0.before&&e0.after,lbl=bo?(e0.slip?"↔ ก่อน/หลัง และสลิป":"↔ เทียบก่อน/หลัง"):(e0.slip?"🧾 ดูสลิป":"");if(lbl){var ba=document.createElement("button");ba.className="chip";ba.textContent=lbl;ba.style.justifySelf="start";ba.onclick=function(){openBA(w);};b.appendChild(ba);}}
-  if(ADMIN){var d=document.createElement("button");d.className="del";d.textContent="ลบผลงานนี้";d.onclick=function(){if(confirm("ลบ “"+w.title+"” ใช่ไหม")){sb.from("portfolio_works").delete().eq("id",w.id).then(function(r){if(r.error)alert("ลบไม่สำเร็จ: "+r.error.message);save();});}};b.appendChild(d);var ev=document.createElement("button");ev.className="del";ev.textContent="ดูหลักฐาน";ev.onclick=function(){viewEvidence(w);};b.appendChild(ev);var vc=document.createElement("small");vc.textContent="👁 "+(VIEWS[w.id]||0)+" ครั้ง";vc.style.color="var(--mute)";b.appendChild(vc);}
+  if(ADMIN){var d=document.createElement("button");d.className="del";d.textContent="ลบผลงานนี้";d.onclick=function(){if(confirm("ลบ “"+w.title+"” ใช่ไหม")){delWork(w);}};b.appendChild(d);var ev=document.createElement("button");ev.className="del";ev.textContent="ดูหลักฐาน";ev.onclick=function(){viewEvidence(w);};b.appendChild(ev);var vc=document.createElement("small");vc.textContent="👁 "+(VIEWS[w.id]||0)+" ครั้ง";vc.style.color="var(--mute)";b.appendChild(vc);}
   c.appendChild(s);c.appendChild(b);g.appendChild(c);});}
 
 var MAPS=[];try{MAPS=JSON.parse(document.getElementById("maps-data").textContent)||[];}catch(e){}
@@ -317,9 +318,9 @@ function renderMaps(){var el=document.getElementById("maps");el.innerHTML="";
    var ch=document.createElement("button");ch.className="del";ch.textContent="เปลี่ยนรูป";
    var fi=document.createElement("input");fi.type="file";fi.accept="image/*";fi.style.display="none";
    ch.onclick=function(){fi.click();};
-   fi.onchange=async function(){if(!fi.files[0])return;ch.textContent="กำลังอัปโหลด...";try{var ip=await uploadFile("work-covers","maps",await shrink(fi.files[0]));var r=await sb.from("portfolio_maps").update({image_path:ip}).eq("id",m.id);if(r.error)throw r.error;await save();}catch(e){ch.textContent="ไม่สำเร็จ ลองใหม่";}};
+   fi.onchange=async function(){if(!fi.files[0])return;ch.textContent="กำลังอัปโหลด...";try{var ip=await uploadFile("work-covers","maps",await shrink(fi.files[0]));var r=await sb.from("portfolio_maps").update({image_path:ip}).eq("id",m.id);if(r.error)throw r.error;if(m.path)await sb.storage.from("work-covers").remove([m.path]);await save();}catch(e){ch.textContent="ไม่สำเร็จ ลองใหม่";}};
    var dl=document.createElement("button");dl.className="del";dl.textContent="ลบแมพ";
-   dl.onclick=function(){if(confirm("ลบแมพ “"+m.name+"” ใช่ไหม (ผลงานที่ใส่ไว้ไม่ถูกลบ)")){sb.from("portfolio_maps").delete().eq("id",m.id).then(function(r){if(r.error)alert("ลบไม่สำเร็จ: "+r.error.message);save();});}};
+   dl.onclick=function(){if(confirm("ลบแมพ “"+m.name+"” ใช่ไหม (ผลงานที่ใส่ไว้ไม่ถูกลบ)")){delMap(m);}};
    r.appendChild(ch);r.appendChild(fi);r.appendChild(dl);b.appendChild(r);}
   c.appendChild(s);c.appendChild(b);el.appendChild(c);});}
 function openMapForm(){
@@ -346,8 +347,8 @@ function addMapBar(){var bar=document.createElement("div");bar.className="adminb
  var sm=document.createElement("small");sm.textContent="โหมดเจ้าของร้าน: เพิ่มแมพหรือเปลี่ยนรูปแมพได้ที่การ์ดด้านล่าง";
  bar.appendChild(bt);bar.appendChild(sm);var m=document.getElementById("maps");m.parentNode.insertBefore(bar,m);}
 var LOADED=false;
-async function save(){document.querySelectorAll(".ov").forEach(function(e){e.remove();});await load();}
-async function shrink(file){try{var bm=await createImageBitmap(file);var r=Math.min(1,1000/Math.max(bm.width,bm.height));var cv=document.createElement("canvas");cv.width=Math.round(bm.width*r);cv.height=Math.round(bm.height*r);cv.getContext("2d").drawImage(bm,0,0,cv.width,cv.height);return await new Promise(function(ok){cv.toBlob(function(b){ok(b||file)},"image/jpeg",0.8)});}catch(e){return file;}}
+async function save(){document.querySelectorAll(".ov").forEach(function(e){e.remove();});await load();if(CIN>0){toast("บีบอัดรูปแล้ว: "+kb(CIN)+" → "+kb(COUT)+" (ประหยัด "+Math.max(0,Math.round((1-COUT/CIN)*100))+"%)");CIN=0;COUT=0;}}
+async function shrink(file){return compress(file,1200,150);}
 function field(lbl,el){var l=document.createElement("label");l.textContent=lbl;l.appendChild(el);return l;}
 function openForm(){
  var ov=document.createElement("div");ov.className="ov";ov.setAttribute("data-admin","");
@@ -398,15 +399,15 @@ async function load(){
  if(sb){try{
   var m=await sb.from("portfolio_maps").select("*").order("sort_order",{ascending:true}).order("created_at",{ascending:true});
   var w=await sb.from("portfolio_works").select("*").order("sort_order",{ascending:true}).order("created_at",{ascending:false});
-  if(!m.error)MAPS=m.data.map(function(x){return {id:x.id,name:x.title,img:cov(x.image_path)};});
-  if(!w.error)WORKS=w.data.map(function(x){return {id:x.id,game:x.game||"",service:x.service||"",title:x.title||"",desc:x.description||"",time:x.duration||"",img:cov(x.cover_path),created:x.created_at||""};});
+  if(!m.error)MAPS=m.data.map(function(x){return {id:x.id,name:x.title,img:cov(x.image_path),path:x.image_path||""};});
+  if(!w.error)WORKS=w.data.map(function(x){return {id:x.id,game:x.game||"",service:x.service||"",title:x.title||"",desc:x.description||"",time:x.duration||"",img:cov(x.cover_path),path:x.cover_path||"",created:x.created_at||""};});
   var ev=await sb.from("portfolio_evidence").select("work_id,evidence_type,file_path").in("evidence_type",["before","after","slip"]);EV={};if(!ev.error&&ev.data)ev.data.forEach(function(r){(EV[r.work_id]=EV[r.work_id]||{})[r.evidence_type]=r.file_path;});
  }catch(e){}}
  LOADED=true;filters();render();renderMaps();buildMarquee();
 }
 async function uploadFile(bucket,folder,blob){
- var p=folder+"/"+Date.now()+"-"+Math.random().toString(36).slice(2,8)+".jpg";
- var r=await sb.storage.from(bucket).upload(p,blob,{contentType:"image/jpeg"});
+ var p=folder+"/"+Date.now()+"-"+Math.random().toString(36).slice(2,8)+"."+(blob.type==="image/webp"?"webp":blob.type==="image/png"?"png":"jpg");
+ var r=await sb.storage.from(bucket).upload(p,blob,{contentType:blob.type||"image/jpeg",cacheControl:"31536000"});
  if(r.error)throw r.error;return p;
 }
 async function viewEvidence(w){
@@ -512,6 +513,34 @@ document.getElementById("lg").onclick=function(){setLang(LANG==="th"?"en":"th");
 document.getElementById("q").oninput=function(){QS=this.value.trim().toLowerCase();PAGE=1;render();};
 document.getElementById("so").onchange=function(){SO=this.value;PAGE=1;render();};
 try{if(localStorage.getItem("axb-lang")==="en")setLang("en");}catch(e){}
+var CIN=0,COUT=0;
+async function compress(file,maxDim,targetKB,origSize){
+ var bm;try{bm=await createImageBitmap(file);}catch(e){return file;}
+ var r=Math.min(1,maxDim/Math.max(bm.width,bm.height)),s=1,q=.82,cv=document.createElement("canvas"),cx=cv.getContext("2d"),type="image/webp",b;
+ function enc(t,qq){return new Promise(function(ok){cv.toBlob(ok,t,qq);});}
+ function paint(){cv.width=Math.max(1,Math.round(bm.width*r*s));cv.height=Math.max(1,Math.round(bm.height*r*s));cx.fillStyle="#fff";cx.fillRect(0,0,cv.width,cv.height);cx.drawImage(bm,0,0,cv.width,cv.height);}
+ paint();b=await enc(type,q);if(!b||b.type!==type){type="image/jpeg";b=await enc(type,q);}
+ while(b&&b.size>targetKB*1024&&q>.5){q-=.07;b=await enc(type,q);}
+ while(b&&b.size>targetKB*1024&&s>.5){s-=.15;paint();b=await enc(type,q);}
+ if(!b||(r===1&&b.size>=file.size))return file;
+ CIN+=origSize||file.size;COUT+=b.size;return b;
+}
+function kb(n){return n>=1048576?(n/1048576).toFixed(1)+" MB":Math.round(n/1024)+" KB";}
+function toast(tx){var d=document.createElement("div");d.className="toast";d.textContent=tx;document.body.appendChild(d);setTimeout(function(){d.remove();},5000);}
+async function delWork(w){
+ var ev=await sb.from("portfolio_evidence").select("file_path").eq("work_id",w.id);
+ var r=await sb.from("portfolio_works").delete().eq("id",w.id);
+ if(r.error){alert("ลบไม่สำเร็จ: "+r.error.message);return;}
+ if(w.path)await sb.storage.from("work-covers").remove([w.path]);
+ if(ev.data&&ev.data.length)await sb.storage.from("work-evidence").remove(ev.data.map(function(x){return x.file_path;}));
+ save();
+}
+async function delMap(m){
+ var r=await sb.from("portfolio_maps").delete().eq("id",m.id);
+ if(r.error){alert("ลบไม่สำเร็จ: "+r.error.message);return;}
+ if(m.path)await sb.storage.from("work-covers").remove([m.path]);
+ save();
+}
 function openRedactor(file,title){
  return new Promise(async function(res){
   var bm;try{bm=await createImageBitmap(file);}catch(e){alert("เปิดรูปนี้ไม่ได้");res(null);return;}
@@ -535,7 +564,7 @@ function openRedactor(file,title){
   b("no","ล้างทั้งหมด",function(){R=[];draw();});
   b("go","เสร็จ — ใช้รูปนี้",function(){
    if(!R.length&&!confirm("ยังไม่ได้ปิดข้อมูลใด ๆ เลย ยืนยันว่ารูปนี้ไม่มีข้อมูลส่วนตัวใช่ไหม"))return;
-   draw();cv.toBlob(function(bl){ov.remove();res(bl);},"image/jpeg",0.9);});
+   draw();cv.toBlob(async function(bl){ov.remove();res(await compress(bl,1400,250,file.size));},"image/jpeg",0.95);});
   d.appendChild(acts);document.body.appendChild(ov);
  });
 }
