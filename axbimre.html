@@ -368,8 +368,9 @@ function openForm(){
  [["สลิป (ลูกค้าทุกคนจะเห็น ต้องปิดชื่อ เลขบัญชี และ QR ก่อนอัปโหลด)","slip"],["ก่อนเริ่มฟาร์ม (ลูกค้าเห็น)","before"],["หลังฟาร์มเสร็จ (ลูกค้าเห็น)","after"]].forEach(function(item){
   var inp=document.createElement("input");inp.type="file";inp.accept="image/*";
   var preview=document.createElement("img");preview.className="prev";preview.style.display="none";preview.alt="ตัวอย่าง "+item[0];
-  inp.onchange=function(){if(inp.files[0]){preview.src=URL.createObjectURL(inp.files[0]);preview.style.display="block";}};
-  evidence.push({label:item[0],key:item[1],input:inp});
+  var ent={label:item[0],key:item[1],input:inp,blob:null};
+  inp.onchange=async function(){ent.blob=null;preview.style.display="none";if(!inp.files[0])return;var bb=await openRedactor(inp.files[0],item[0]);if(!bb){inp.value="";return;}ent.blob=bb;preview.src=URL.createObjectURL(bb);preview.style.display="block";};
+  evidence.push(ent);
   d.appendChild(field(item[0]+" (ไม่บังคับ)",inp));d.appendChild(preview);
  });
  d.appendChild(field("หมวดแมพ",gsel));d.appendChild(gnew);d.appendChild(field("ประเภทบริการ",ssel));d.appendChild(field("ชื่อผลงาน",ti));d.appendChild(field("รายละเอียด",de));d.appendChild(field("ระยะเวลา",tm));d.appendChild(field("รูปหน้าปกผลงาน (ไม่บังคับ)",fi));d.appendChild(pv);
@@ -384,7 +385,7 @@ function openForm(){
   try{var cp="";if(fi.files[0]){cp=await uploadFile("work-covers","covers",await shrink(fi.files[0]));}
    var r=await sb.from("portfolio_works").insert({title:ti.value.trim(),game:game,service:ssel.value,duration:tm.value.trim(),description:de.value.trim(),cover_path:cp||null,is_published:true,sort_order:0}).select("id").single();
    if(r.error)throw r.error;
-   for(var j=0;j<evidence.length;j++){var it=evidence[j];if(it.input.files[0]){var ep=await uploadFile("work-evidence",r.data.id,await shrink(it.input.files[0]));var e2=await sb.from("portfolio_evidence").insert({work_id:r.data.id,evidence_type:it.key,file_path:ep});if(e2.error)throw e2.error;}}
+   for(var j=0;j<evidence.length;j++){var it=evidence[j];if(it.blob){var ep=await uploadFile("work-evidence",r.data.id,it.blob);var e2=await sb.from("portfolio_evidence").insert({work_id:r.data.id,evidence_type:it.key,file_path:ep});if(e2.error)throw e2.error;}}
    await save();
   }catch(e){go.disabled=false;msg.textContent="บันทึกไม่สำเร็จ: "+(e&&e.message?e.message:"ลองใหม่อีกครั้ง");}
  };
@@ -511,6 +512,33 @@ document.getElementById("lg").onclick=function(){setLang(LANG==="th"?"en":"th");
 document.getElementById("q").oninput=function(){QS=this.value.trim().toLowerCase();PAGE=1;render();};
 document.getElementById("so").onchange=function(){SO=this.value;PAGE=1;render();};
 try{if(localStorage.getItem("axb-lang")==="en")setLang("en");}catch(e){}
+function openRedactor(file,title){
+ return new Promise(async function(res){
+  var bm;try{bm=await createImageBitmap(file);}catch(e){alert("เปิดรูปนี้ไม่ได้");res(null);return;}
+  var sc=Math.min(1,1600/Math.max(bm.width,bm.height)),cv=document.createElement("canvas");cv.width=Math.round(bm.width*sc);cv.height=Math.round(bm.height*sc);
+  var cx=cv.getContext("2d"),R=[],cur=null,st=null;
+  function draw(){cx.drawImage(bm,0,0,cv.width,cv.height);cx.fillStyle="#000";(cur?R.concat([cur]):R).forEach(function(r){cx.fillRect(r.x,r.y,r.w,r.h);});}
+  function pt(e){var r=cv.getBoundingClientRect();return {x:Math.max(0,Math.min(cv.width,(e.clientX-r.left)*cv.width/r.width)),y:Math.max(0,Math.min(cv.height,(e.clientY-r.top)*cv.height/r.height))};}
+  draw();
+  var ov=document.createElement("div");ov.className="ov";var d=document.createElement("div");d.className="dlg wide";ov.appendChild(d);
+  var h=document.createElement("h3");h.textContent="ปิดข้อมูลบนรูป";d.appendChild(h);
+  var hint=document.createElement("div");hint.style.cssText="font-size:14px;opacity:.85";hint.textContent="ลากนิ้วหรือเมาส์เพื่อวาดกล่องดำทึบทับ ชื่อ เลขบัญชี QR และเลขอ้างอิง (ปิดแล้วกู้กลับไม่ได้) ปิดให้หมดแล้วกด “เสร็จ”";d.appendChild(hint);
+  cv.style.cssText="display:block;margin:0 auto;max-width:100%;max-height:60vh;touch-action:none;cursor:crosshair;border-radius:12px;background:#222";
+  cv.onpointerdown=function(e){st=pt(e);cv.setPointerCapture(e.pointerId);cur={x:st.x,y:st.y,w:0,h:0};draw();};
+  cv.onpointermove=function(e){if(!st)return;var p=pt(e);cur={x:Math.min(st.x,p.x),y:Math.min(st.y,p.y),w:Math.abs(p.x-st.x),h:Math.abs(p.y-st.y)};draw();};
+  cv.onpointerup=function(){if(cur&&cur.w>4&&cur.h>4)R.push(cur);cur=null;st=null;draw();};
+  d.appendChild(cv);
+  var acts=document.createElement("div");acts.className="acts";
+  function b(c,tx,f){var x=document.createElement("button");x.className=c;x.textContent=tx;x.onclick=f;acts.appendChild(x);return x;}
+  b("no","ยกเลิก",function(){ov.remove();res(null);});
+  b("no","ย้อนกลับ 1 กล่อง",function(){R.pop();draw();});
+  b("no","ล้างทั้งหมด",function(){R=[];draw();});
+  b("go","เสร็จ — ใช้รูปนี้",function(){
+   if(!R.length&&!confirm("ยังไม่ได้ปิดข้อมูลใด ๆ เลย ยืนยันว่ารูปนี้ไม่มีข้อมูลส่วนตัวใช่ไหม"))return;
+   draw();cv.toBlob(function(bl){ov.remove();res(bl);},"image/jpeg",0.9);});
+  d.appendChild(acts);document.body.appendChild(ov);
+ });
+}
 function buildMarquee(){var g=allGames(),el=document.getElementById("mq");if(!el||!g.length)return;el.innerHTML="";
  for(var r=0;r<2;r++){var d=document.createElement("div");d.className="mq-in";for(var k=0;k<4;k++)g.forEach(function(n){var s=document.createElement("span");s.textContent="✦ "+n;d.appendChild(s);});el.appendChild(d);}}
 (function(){
