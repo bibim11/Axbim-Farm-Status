@@ -9,6 +9,18 @@
 <p>เลือกรูปสลิป แล้วลากวาดกล่องดำทับข้อมูลส่วนตัว จากนั้นดาวน์โหลดรูปใหม่ไปอัปโหลดต่อ <b>รูปไม่ถูกส่งไปที่ใด</b> ทำงานในเครื่องของคุณเท่านั้น และรูปที่ได้จะไม่มีข้อมูลแฝง (เช่น พิกัดหรือชื่อรุ่นมือถือ) ติดไปด้วย</p>
 <input type="file" id="f" accept="image/*"><div id="out"></div>
 <script>
+var CIN=0,COUT=0;
+async function compress(file,maxDim,targetKB,origSize){
+ var bm;try{bm=await createImageBitmap(file);}catch(e){return file;}
+ var r=Math.min(1,maxDim/Math.max(bm.width,bm.height)),s=1,q=.82,cv=document.createElement("canvas"),cx=cv.getContext("2d"),type="image/webp",b;
+ function enc(t,qq){return new Promise(function(ok){cv.toBlob(ok,t,qq);});}
+ function paint(){cv.width=Math.max(1,Math.round(bm.width*r*s));cv.height=Math.max(1,Math.round(bm.height*r*s));cx.fillStyle="#fff";cx.fillRect(0,0,cv.width,cv.height);cx.drawImage(bm,0,0,cv.width,cv.height);}
+ paint();b=await enc(type,q);if(!b||b.type!==type){type="image/jpeg";b=await enc(type,q);}
+ while(b&&b.size>targetKB*1024&&q>.5){q-=.07;b=await enc(type,q);}
+ while(b&&b.size>targetKB*1024&&s>.5){s-=.15;paint();b=await enc(type,q);}
+ if(!b||(r===1&&b.size>=file.size))return file;
+ CIN+=origSize||file.size;COUT+=b.size;return b;
+}
 function openRedactor(file,title){
  return new Promise(async function(res){
   var bm;try{bm=await createImageBitmap(file);}catch(e){alert("เปิดรูปนี้ไม่ได้");res(null);return;}
@@ -32,7 +44,7 @@ function openRedactor(file,title){
   b("no","ล้างทั้งหมด",function(){R=[];draw();});
   b("go","เสร็จ — ใช้รูปนี้",function(){
    if(!R.length&&!confirm("ยังไม่ได้ปิดข้อมูลใด ๆ เลย ยืนยันว่ารูปนี้ไม่มีข้อมูลส่วนตัวใช่ไหม"))return;
-   draw();cv.toBlob(function(bl){ov.remove();res(bl);},"image/jpeg",0.9);});
+   draw();cv.toBlob(async function(bl){ov.remove();res(await compress(bl,1400,250,file.size));},"image/jpeg",0.95);});
   d.appendChild(acts);document.body.appendChild(ov);
  });
 }
@@ -40,5 +52,5 @@ function openRedactor(file,title){
 var f=document.getElementById("f"),out=document.getElementById("out");
 f.onchange=async function(){out.innerHTML="";if(!f.files[0])return;var bl=await openRedactor(f.files[0]);f.value="";if(!bl)return;
  var u=URL.createObjectURL(bl),im=document.createElement("img");im.src=u;im.alt="สลิปที่ปิดข้อมูลแล้ว";
- var a=document.createElement("a");a.className="btn";a.href=u;a.download="slip-covered.jpg";a.textContent="ดาวน์โหลดรูปที่ปิดข้อมูลแล้ว";out.appendChild(im);out.appendChild(a);};
+ var a=document.createElement("a");a.className="btn";a.href=u;a.download="slip-covered."+(bl.type==="image/webp"?"webp":"jpg");a.textContent="ดาวน์โหลดรูปที่ปิดข้อมูลแล้ว";out.appendChild(im);out.appendChild(a);};
 </script></body></html>
