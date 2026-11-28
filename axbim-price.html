@@ -170,9 +170,9 @@ a.chip{text-decoration:none;display:inline-block}#lg{font-size:12px;font-weight:
 
 .pill{justify-self:start;font-family:"Mali",sans-serif;font-size:18px;font-weight:700}
 .pill.a0{background:transparent;border:1.5px dashed var(--pink2);color:var(--pink);font-size:15px}
-.gh{display:flex;align-items:center;gap:12px;margin:30px 0 2px}
-.gh img{width:56px;height:56px;border-radius:16px;object-fit:cover;border:2px solid var(--line)}
-.gh h3{margin:0;font-family:"Mali",sans-serif;font-size:28px}
+.gh{display:flex;align-items:center;gap:18px;margin:34px 0 4px}
+.gh img{width:128px;height:128px;border-radius:28px;object-fit:cover;border:3px solid var(--line);box-shadow:0 10px 30px var(--glow);cursor:zoom-in}@media(max-width:560px){.gh img{width:96px;height:96px;border-radius:22px}}
+.gh h3{margin:0;font-family:"Mali",sans-serif;font-size:clamp(28px,5vw,38px)}
 .ch{margin:18px 0 10px;font-family:"Mali",sans-serif;font-size:19px;color:var(--pink)}
 </style>
 </head>
@@ -255,21 +255,21 @@ var DEF=[["Blox Fruits","เลเวล","ฟาร์มเลเวล (ร�
 ["Blox Fruits","AFK","AFK ฟาร์มต่อเนื่อง","คิดตามจำนวนชั่วโมง"],["Blox Fruits","ผลปีศาจ","ผลถาวร (Perm Fruit)","แจ้งชื่อผลที่ต้องการ"]]
 .map(function(r,i){return {id:"d"+i,game:r[0],cat:r[1],title:r[2],desc:r[3],price:"",img:"",path:"",order:i};});
 
-var ITEMS=[],MAPS={},ADMIN=false,LOADED=false,DBERR=false,gs="ทั้งหมด",cs="ทั้งหมด";
+var ITEMS=[],MAPS={},ADMIN=false,LOADED=false,DBERR=false,DBMSG="",gs="ทั้งหมด",cs="ทั้งหมด";
 function okImg(u){return typeof u==="string"&&/^(\/_blob\/|https:\/\/|data:image\/)/.test(u);}
 function uniq(a){return a.filter(function(v,i){return v&&a.indexOf(v)===i;});}
 function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;}
 function games(){return uniq(ITEMS.map(function(i){return i.game;}));}
 
 async function load(){
- DBERR=!sb;
+ DBERR=!sb;DBMSG=sb?"":"โหลด Supabase ไม่สำเร็จ";
  if(sb){try{
   var m=await sb.from("portfolio_maps").select("title,image_path");MAPS={};
   if(!m.error)m.data.forEach(function(x){MAPS[x.title]=cov(x.image_path);});
   var r=await sb.from("price_items").select("*").order("sort_order",{ascending:true}).order("created_at",{ascending:true});
-  DBERR=!!r.error;
+  DBERR=!!r.error;if(r.error)DBMSG=r.error.message||String(r.error.code||"");
   if(!r.error)ITEMS=r.data.filter(function(x){return x.is_published!==false;}).map(function(x){return {id:x.id,game:x.game||"",cat:x.category||"",title:x.title||"",desc:x.description||"",price:x.price||"",img:cov(x.image_path),path:x.image_path||"",order:x.sort_order||0};});
- }catch(e){DBERR=true;}}
+ }catch(e){DBERR=true;DBMSG=e.message||"";}}
  if(DBERR)ITEMS=DEF;
  LOADED=true;filters();render();
 }
@@ -296,7 +296,7 @@ function render(){
  if(!items.length){if(LOADED)L.appendChild(el("div","empty",ADMIN?"ยังไม่มีรายการ กด + เพิ่มรายการ":"กำลังจัดรายการ ทักถามราคาได้เลย"));return;}
  uniq(items.map(function(i){return i.game;})).forEach(function(g){
   var gi=items.filter(function(i){return i.game===g;}),h=el("div","gh");
-  if(okImg(MAPS[g])){var im=el("img");im.src=MAPS[g];im.alt="";h.appendChild(im);}
+  if(okImg(MAPS[g])){var im=el("img");im.src=MAPS[g];im.alt="แมพ "+g;im.onclick=function(){openLB(MAPS[g]);};h.appendChild(im);}
   h.appendChild(el("h3",null,g));L.appendChild(h);
   uniq(gi.map(function(i){return i.cat;})).forEach(function(c){
    L.appendChild(el("h4","ch",c));var gr=el("div","grid");
@@ -352,7 +352,7 @@ function enterAdmin(){
  var f=document.querySelector("#prices .filters");f.parentNode.insertBefore(bar,f);
  var fx=el("div","dlbar"),lo=el("button",null,"ออกจากระบบ");fx.setAttribute("data-admin","");fx.appendChild(el("span",null,"ล็อกอินเป็นแอดมินอยู่"));
  lo.onclick=async function(){await sb.auth.signOut();location.hash="";location.reload();};fx.appendChild(lo);document.body.appendChild(fx);
- if(DBERR){sm.textContent="ยังไม่ได้สร้างตาราง price_items ใน Supabase จึงแก้ไขไม่ได้ ให้รันไฟล์ SQL ตั้งค่าก่อน";bt.disabled=true;}
+ if(DBERR){sm.textContent="อ่านตาราง price_items ไม่ได้ จึงเพิ่ม/แก้/ลบไม่ได้ สาเหตุ: "+DBMSG;bt.disabled=true;}
  render();
 }
 async function initAdmin(){if(location.hash!=="#admin"||ADMIN||!sb)return;if(await isAdmin()){await load();enterAdmin();}else loginForm();}
